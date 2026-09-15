@@ -6,14 +6,14 @@ The portfolio uses a charcoal-black editorial interface with a pixel-art / devel
 
 ## Palette
 
-| Token | Value | Use |
-|---|---|---|
-| Charcoal | `#111315` | Primary background and chrome |
-| Charcoal Soft | `#1A1D20` | Cards, panels, and elevated surfaces |
-| Text White | `#F5F3EE` | Main readable text |
-| Bright Blue | `#36A3FF` | Primary accent, links, active states, focus |
-| Orange | `#FF754D` | Secondary accent, status, hover, emphasis |
-| Muted Gray | `#9198A1` | Supporting copy and metadata |
+| Token         | Value     | Use                                         |
+| ------------- | --------- | ------------------------------------------- |
+| Charcoal      | `#111315` | Primary background and chrome               |
+| Charcoal Soft | `#1A1D20` | Cards, panels, and elevated surfaces        |
+| Text White    | `#F5F3EE` | Main readable text                          |
+| Bright Blue   | `#36A3FF` | Primary accent, links, active states, focus |
+| Orange        | `#FF754D` | Secondary accent, status, hover, emphasis   |
+| Muted Gray    | `#9198A1` | Supporting copy and metadata                |
 
 ## Typography
 

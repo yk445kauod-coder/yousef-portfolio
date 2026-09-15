@@ -5,10 +5,13 @@ export async function onRequestPost(context) {
     const { message, history } = await request.json();
 
     if (!message || typeof message !== "string") {
-      return new Response(JSON.stringify({ error: "الرجاء إدخال رسالة صحيحة" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" }
-      });
+      return new Response(
+        JSON.stringify({ error: "الرجاء إدخال رسالة صحيحة" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     const openRouterApiKey = env?.OPENROUTER_API_KEY;
@@ -16,18 +19,31 @@ export async function onRequestPost(context) {
     if (!openRouterApiKey) {
       // Fallback smart response if API key is not yet set in Cloudflare dashboard
       const lowerMsg = message.toLowerCase();
-      let reply = "أهلاً بك! أنا المساعد الذكي ليوسف. يسعدني إجابة أي سؤال حول مشاريع يوسف في الذكاء الاصطناعي وتطوير الويب متكامل الأركان!";
+      let reply =
+        "أهلاً بك! أنا المساعد الذكي ليوسف. يسعدني إجابة أي سؤال حول مشاريع يوسف في الذكاء الاصطناعي وتطوير الويب متكامل الأركان!";
 
-      if (lowerMsg.includes("مشروع") || lowerMsg.includes("مشاريع") || lowerMsg.includes("أعمال")) {
-        reply = "قام يوسف بتطوير مشاريع استثنائية أبرزها:\n1. Egytronic_1.0: منصة ذكية لإنترنت الأشياء والمستشعرات.\n2. Azura Cafe: نظام رقمي متكامل لإدارة الطلبات والمبيعات.\n3. SmartBoard AI: سبورة تفاعلية مدعومة بالذكاء الاصطناعي!";
-      } else if (lowerMsg.includes("تواصل") || lowerMsg.includes("إيميل") || lowerMsg.includes("اتصل") || lowerMsg.includes("هاتف")) {
-        reply = "يمكنك التواصل مع يوسف مباشرة عبر قسم 'تواصل / Contact' في أسفل الصفحة، الهاتف: 01017835158، أو البريد الإلكتروني: yusf17835@gmail.com!";
+      if (
+        lowerMsg.includes("مشروع") ||
+        lowerMsg.includes("مشاريع") ||
+        lowerMsg.includes("أعمال")
+      ) {
+        reply =
+          "قام يوسف بتطوير مشاريع استثنائية أبرزها:\n1. Egytronic_1.0: منصة ذكية لإنترنت الأشياء والمستشعرات.\n2. Azura Cafe: نظام رقمي متكامل لإدارة الطلبات والمبيعات.\n3. SmartBoard AI: سبورة تفاعلية مدعومة بالذكاء الاصطناعي!";
+      } else if (
+        lowerMsg.includes("تواصل") ||
+        lowerMsg.includes("إيميل") ||
+        lowerMsg.includes("اتصل") ||
+        lowerMsg.includes("هاتف")
+      ) {
+        reply =
+          "يمكنك التواصل مع يوسف مباشرة عبر قسم 'تواصل / Contact' في أسفل الصفحة، الهاتف: 01017835158، أو البريد الإلكتروني: yusf17835@gmail.com!";
       } else if (lowerMsg.includes("مهارات") || lowerMsg.includes("تقنيات")) {
-        reply = "يتميز يوسف بإتقان React, TypeScript, Node.js, Three.js, بالإضافة لبناء أنظمة الذكاء الاصطناعي RAG و LLM Integrations!";
+        reply =
+          "يتميز يوسف بإتقان React, TypeScript, Node.js, Three.js, بالإضافة لبناء أنظمة الذكاء الاصطناعي RAG و LLM Integrations!";
       }
 
       return new Response(JSON.stringify({ reply }), {
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -47,50 +63,64 @@ export async function onRequestPost(context) {
 
     const formattedMessages = [
       { role: "system", content: systemPrompt },
-      ...(Array.isArray(history) ? history.map(h => ({
-        role: h.sender === "user" ? "user" : "assistant",
-        content: h.text
-      })) : []),
-      { role: "user", content: message }
+      ...(Array.isArray(history)
+        ? history.map(h => ({
+            role: h.sender === "user" ? "user" : "assistant",
+            content: h.text,
+          }))
+        : []),
+      { role: "user", content: message },
     ];
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${openRouterApiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://yousef-portfolio.pages.dev",
-        "X-Title": "Yousef Madbooly Portfolio AI"
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-lite",
-        messages: formattedMessages,
-        temperature: 0.7,
-        max_tokens: 450
-      })
-    });
+    const response = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${openRouterApiKey}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://yousef-portfolio.pages.dev",
+          "X-Title": "Yousef Madbooly Portfolio AI",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash-lite",
+          messages: formattedMessages,
+          temperature: 0.7,
+          max_tokens: 450,
+        }),
+      }
+    );
 
     if (!response.ok) {
-      return new Response(JSON.stringify({
-        reply: "أهلاً بك! أنا المساعد الذكي ليوسف. يسعدني الإجابة على استفساراتك حول خبرات يوسف ومشاريعه!"
-      }), {
-        headers: { "Content-Type": "application/json" }
-      });
+      return new Response(
+        JSON.stringify({
+          reply:
+            "أهلاً بك! أنا المساعد الذكي ليوسف. يسعدني الإجابة على استفساراتك حول خبرات يوسف ومشاريعه!",
+        }),
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || "أهلاً بك! أنا المساعد الذكي ليوسف.";
+    const reply =
+      data.choices?.[0]?.message?.content ||
+      "أهلاً بك! أنا المساعد الذكي ليوسف.";
 
     return new Response(JSON.stringify({ reply }), {
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     });
-
   } catch (err) {
-    return new Response(JSON.stringify({
-      reply: "أهلاً بك! أنا المساعد الذكي ليوسف. يسعدني الإجابة على استفساراتك حول خبرات يوسف ومشاريعه!"
-    }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+    return new Response(
+      JSON.stringify({
+        reply:
+          "أهلاً بك! أنا المساعد الذكي ليوسف. يسعدني الإجابة على استفساراتك حول خبرات يوسف ومشاريعه!",
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }
