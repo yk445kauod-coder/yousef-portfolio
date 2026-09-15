@@ -85,19 +85,39 @@ const skills = [
 
 function OrbitScene() {
   const mountRef = useRef<HTMLDivElement>(null);
+  const [webglSupported, setWebglSupported] = useState(true);
 
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
 
+    // Safely verify WebGL availability to prevent page crashes on unsupported or low-memory devices
+    let renderer: THREE.WebGLRenderer | null = null;
+    try {
+      const canvas = document.createElement("canvas");
+      const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      if (!gl) {
+        setWebglSupported(false);
+        return;
+      }
+
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: window.devicePixelRatio <= 1.5,
+        powerPreference: "low-power",
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.setClearColor(0x000000, 0);
+      mount.appendChild(renderer.domElement);
+    } catch (e) {
+      console.warn("WebGL creation failed, using CSS fallback:", e);
+      setWebglSupported(false);
+      return;
+    }
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
     camera.position.set(0, 0, 7.3);
-
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-    mount.appendChild(renderer.domElement);
 
     const group = new THREE.Group();
     scene.add(group);
@@ -128,7 +148,7 @@ function OrbitScene() {
 
     // Orange Primary Orbit Ring
     const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(2.16, 0.012, 12, 120),
+      new THREE.TorusGeometry(2.16, 0.012, 8, 60),
       new THREE.MeshBasicMaterial({
         color: 0xff754d,
         transparent: true,
@@ -141,7 +161,7 @@ function OrbitScene() {
 
     // Bright Blue Secondary Ring
     const ringTwo = new THREE.Mesh(
-      new THREE.TorusGeometry(2.43, 0.008, 12, 120),
+      new THREE.TorusGeometry(2.43, 0.008, 8, 60),
       new THREE.MeshBasicMaterial({
         color: 0x36a3ff,
         transparent: true,
@@ -152,9 +172,9 @@ function OrbitScene() {
     ringTwo.rotation.z = 0.7;
     group.add(ringTwo);
 
-    // Particle Cloud
+    // Particle Cloud (Optimized particle count for light GPU memory footprint)
     const particlesGeometry = new THREE.BufferGeometry();
-    const particleCount = 480;
+    const particleCount = 200;
     const positions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i += 1) {
       const radius = 2.8 + Math.random() * 1.5;
@@ -181,8 +201,6 @@ function OrbitScene() {
 
     let targetX = 0;
     let targetY = 0;
-
-    // Optimization: Cache bounding rectangle on resize to prevent layout thrashing (forced sync reflow) on pointermove
     let mountRect = mount.getBoundingClientRect();
 
     const onPointerMove = (event: PointerEvent) => {
@@ -194,38 +212,82 @@ function OrbitScene() {
     mount.addEventListener("pointermove", onPointerMove);
 
     const resize = () => {
+      if (!renderer) return;
       mountRect = mount.getBoundingClientRect();
       const { width, height } = mountRect;
-      renderer.setSize(width, height, false);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
+      if (width > 0 && height > 0) {
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
     };
     resize();
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(mount);
 
+    // Handle WebGL context loss gracefully
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      setWebglSupported(false);
+    };
+    const domElement = renderer.domElement;
+    domElement.addEventListener("webglcontextlost", handleContextLost, false);
+
+    let isVisible = true;
     let frame = 0;
+
+    // Pause rendering loop when component is not in viewport
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0.1 }
+    );
+    visibilityObserver.observe(mount);
+
     const animate = () => {
       frame = requestAnimationFrame(animate);
-      group.rotation.y += 0.0029;
-      group.rotation.x += 0.0007;
+      if (!isVisible || !renderer) return;
+
+      group.rotation.y += 0.0025;
+      group.rotation.x += 0.0006;
       group.rotation.x += (targetY - group.rotation.x) * 0.012;
       group.rotation.z += (targetX - group.rotation.z) * 0.012;
-      particles.rotation.y -= 0.0007;
-      particles.rotation.x += 0.00025;
+      particles.rotation.y -= 0.0006;
+      particles.rotation.x += 0.0002;
       renderer.render(scene, camera);
     };
     animate();
 
     return () => {
       cancelAnimationFrame(frame);
+      visibilityObserver.disconnect();
       resizeObserver.disconnect();
       mount.removeEventListener("pointermove", onPointerMove);
-      renderer.dispose();
+      domElement.removeEventListener("webglcontextlost", handleContextLost);
+      if (renderer) {
+        renderer.dispose();
+        if (mount.contains(domElement)) {
+          mount.removeChild(domElement);
+        }
+      }
       particlesGeometry.dispose();
-      mount.removeChild(renderer.domElement);
     };
   }, []);
+
+  if (!webglSupported) {
+    return (
+      <div
+        className="orbit-scene flex items-center justify-center relative overflow-hidden"
+        aria-label="Animated CSS Orbit Fallback"
+      >
+        <div className="w-48 h-48 rounded-full border border-[#36A3FF]/40 animate-spin flex items-center justify-center relative duration-10000">
+          <div className="w-32 h-32 rounded-full border border-[#FF754D]/60 animate-pulse" />
+          <div className="absolute w-52 h-24 border border-[#36A3FF]/30 rounded-full rotate-45" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
