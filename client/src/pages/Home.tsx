@@ -4,10 +4,8 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   BrainCircuit,
-  Check,
-  ChevronRight,
   Code2,
-  ExternalLink,
+  Cpu,
   Github,
   Globe2,
   Layers3,
@@ -15,26 +13,23 @@ import {
   Mail,
   MapPin,
   Menu,
-  Moon,
   Radio,
   Sparkles,
   Volume2,
   VolumeX,
   X,
   Zap,
-  Terminal,
-  Cpu,
-  Smartphone,
-  Layers,
-  Flame,
+  MessageSquare,
+  Bot,
 } from "lucide-react";
 import {
-  isSoundEnabled,
   playClickSound,
   playHoverSound,
   playSectionSwitchSound,
   setSoundEnabled,
 } from "../lib/audio";
+import { PixelMascot } from "../components/PixelMascot";
+import { ChatDrawer } from "../components/ChatDrawer";
 
 const projects = [
   {
@@ -203,6 +198,102 @@ function OrbitScene() {
   return <div ref={mountRef} className="orbit-scene" aria-label="Interactive Three.js particle sphere" />;
 }
 
+function PhotoCard3D() {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [rotX, setRotX] = useState(0);
+  const [rotY, setRotY] = useState(0);
+  const [shinePos, setShinePos] = useState({ x: 50, y: 50 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const calcRotX = -((y - centerY) / centerY) * 16;
+    const calcRotY = ((x - centerX) / centerX) * 16;
+
+    setRotX(calcRotX);
+    setRotY(calcRotY);
+    setShinePos({
+      x: (x / rect.width) * 100,
+      y: (y / rect.height) * 100,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setRotX(0);
+    setRotY(0);
+  };
+
+  return (
+    <div className="perspective-1000">
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          playHoverSound();
+        }}
+        onMouseLeave={handleMouseLeave}
+        className="relative group w-56 h-64 md:w-64 md:h-72 shrink-0 rounded-2xl overflow-hidden border-2 border-[#36A3FF] shadow-[0_0_25px_rgba(54,163,255,0.3)] transition-transform duration-200 ease-out cursor-pointer select-none"
+        style={{
+          transform: `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(${
+            isHovered ? 1.05 : 1
+          }, ${isHovered ? 1.05 : 1}, 1)`,
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {/* Specular Light Reflection Overlay */}
+        <div
+          className="absolute inset-0 z-20 pointer-events-none transition-opacity duration-300"
+          style={{
+            background: `radial-gradient(circle at ${shinePos.x}% ${shinePos.y}%, rgba(54, 163, 255, 0.45) 0%, rgba(255, 117, 77, 0.2) 40%, transparent 80%)`,
+            opacity: isHovered ? 0.8 : 0,
+          }}
+        />
+
+        {/* 3D Depth Image Layer */}
+        <img
+          src="/yousef.jpg"
+          alt="Yousef Madbouly"
+          className="w-full h-full object-cover grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500"
+          style={{ transform: "translateZ(20px)" }}
+        />
+
+        {/* Dynamic Dark Gradient Backdrop */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#111315] via-transparent to-transparent opacity-80 z-10" />
+
+        {/* Parallax Floating 3D Badge (Yousef Madbooly) */}
+        <div
+          className="absolute bottom-3 left-3 right-3 z-30 px-3 py-1.5 bg-[#111315]/90 backdrop-blur-md border border-[#36A3FF] rounded-lg text-xs font-en-pixel text-[#FF754D] flex justify-between items-center shadow-[0_0_15px_rgba(54,163,255,0.4)]"
+          style={{ transform: "translateZ(40px)" }}
+        >
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#FF754D] animate-ping" />
+            <span className="font-semibold tracking-wider text-[#F5F3EE]">YOUSEF MADBOULY</span>
+          </div>
+          <span className="text-[#36A3FF]">FULL-STACK & AI</span>
+        </div>
+
+        {/* Parallax Top Tag */}
+        <div
+          className="absolute top-3 right-3 z-30 px-2 py-0.5 bg-[#FF754D] text-[#111315] font-en-pixel text-[10px] font-bold rounded shadow-md"
+          style={{ transform: "translateZ(35px)" }}
+        >
+          ALEXANDRIA, EG
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SpotlightCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const onMove = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -243,6 +334,7 @@ function UiverseButton({ children, href, outline = false }: { children: React.Re
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const toggleSound = () => {
     const next = !soundOn;
@@ -259,6 +351,12 @@ export default function Home() {
 
   return (
     <main className="portfolio-shell">
+      {/* Interactive Pixel Art Boy Mascot */}
+      <PixelMascot onOpenChat={() => setChatOpen(true)} />
+
+      {/* AI Personal Agent Chat Drawer */}
+      <ChatDrawer isOpen={chatOpen} onClose={() => setChatOpen(false)} />
+
       <div className="grain" />
       <header className="site-header">
         <button
@@ -276,12 +374,23 @@ export default function Home() {
           <button onClick={() => scrollTo("about")} onMouseEnter={playHoverSound}>
             عني / ABOUT
           </button>
-
           <button onClick={() => scrollTo("contact")} onMouseEnter={playHoverSound}>
             تواصل / CONTACT
           </button>
         </nav>
         <div className="header-actions">
+          <button
+            className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FF754D]/10 hover:bg-[#FF754D]/20 border border-[#FF754D]/50 text-[#FF754D] text-xs font-ar-pixel transition-all"
+            onClick={() => {
+              playClickSound();
+              setChatOpen(true);
+            }}
+            onMouseEnter={playHoverSound}
+          >
+            <Bot className="w-4 h-4" />
+            <span>اسأل المساعد الذكي</span>
+          </button>
+
           <button
             className="sound-toggle"
             onClick={toggleSound}
@@ -357,43 +466,47 @@ export default function Home() {
         <div className="section-kicker">
           <span className="font-en-pixel">02</span>
           <span className="eyebrow-line" />
-          <span className="font-ar-pixel text-lg">منهجية العمل</span>
+          <span className="font-ar-pixel text-lg">منهجية العمل والخبرة</span>
         </div>
         <div className="statement-grid">
-          <div className="flex flex-col md:flex-row gap-8 items-start col-span-full">
-            <div className="relative group w-48 h-48 md:w-56 md:h-56 shrink-0 rounded-2xl overflow-hidden border-2 border-[#36A3FF] shadow-[0_0_20px_rgba(54,163,255,0.25)]">
-              <img
-                src="/yousef.jpg"
-                alt="Yousef Madbouly"
-                className="w-full h-full object-cover grayscale contrast-110 group-hover:grayscale-0 transition-all duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#111315] via-transparent to-transparent opacity-60" />
-              <div className="absolute bottom-2 left-2 right-2 px-2 py-1 bg-[#111315]/80 backdrop-blur border border-[#36A3FF]/40 rounded text-[0.65rem] font-en-pixel text-[#FF754D] flex justify-between">
-                <span>YOUSEF MADBOULY</span>
-                <span>EG</span>
-              </div>
-            </div>
+          <div className="flex flex-col md:flex-row gap-8 items-center md:items-start col-span-full">
+            {/* Interactive 3D Depth Card for Yousef's Photo */}
+            <PhotoCard3D />
+
             <div>
               <p className="statement-lead">
-                أصمم وأطور أنظمة تجعل التقنيات المعقدة <em>سلسة ومباشرة</em> للاستخدام.
+                أصمم وأطور أنظمة تجمع بين <em>الذكاء الاصطناعي والتنفيذ التقني المحترف</em>.
               </p>
               <div className="statement-body mt-4">
                 <p>
                   أربع سنوات من التعلّم الذاتي والتطوير المستقل علّمتني بناء الدورة البرمجية كاملة — من صياغة المفهوم الأولي وحتى إطلاق منتج حقيقي يخدم المستخدمين.
                 </p>
                 <p>
-                  سواء كان ذلك تدريب نموذج لغوي بالعامية المصرية، أو إنشاء قائمة طعام تفاعلية تعمل عبر كود QR، أو سبورة تعليمية ذكية للمدرسين.
+                  سواء كان ذلك تدريب نموذج لغوي بالعامية المصرية (Egytronic_1.0)، أو إنشاء قائمة طعام تفاعلية تعمل عبر كود QR (Azura Cafe)، أو سبورة تعليمية ذكية للمدرسين (SmartBoard AI).
                 </p>
-                <a
-                  className="arrow-link text-[#FF754D]"
-                  href="https://github.com/yk445kauod-coder"
-                  target="_blank"
-                  rel="noreferrer"
-                  onMouseEnter={playHoverSound}
-                  onClick={playClickSound}
-                >
-                  تصفح مستودع الكود على GitHub <ArrowUpRight size={17} />
-                </a>
+                <div className="mt-4 flex flex-wrap gap-3 items-center">
+                  <a
+                    className="arrow-link text-[#FF754D]"
+                    href="https://github.com/yk445kauod-coder"
+                    target="_blank"
+                    rel="noreferrer"
+                    onMouseEnter={playHoverSound}
+                    onClick={playClickSound}
+                  >
+                    تصفح مستودع الكود على GitHub <ArrowUpRight size={17} />
+                  </a>
+                  <button
+                    onClick={() => {
+                      playClickSound();
+                      setChatOpen(true);
+                    }}
+                    onMouseEnter={playHoverSound}
+                    className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#36A3FF]/15 border border-[#36A3FF] text-[#36A3FF] hover:bg-[#36A3FF] hover:text-[#111315] text-xs font-ar-pixel transition-all"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>تحدث مع المساعد الذكي عن خبراتي</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
