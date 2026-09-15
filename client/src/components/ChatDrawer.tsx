@@ -27,7 +27,10 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
       id: "1",
       sender: "ai",
       text: "أهلاً بك! أنا يوسف الذكي (AI Mascot Companion). يسعدني جداً إجابة أي أسئلة حول خبرات يوسف، مشاريعه (Egytronic_1.0, SmartBoard AI, Azura Cafe)، أو إمكانية العمل معاً! كيف أقدر أساعدك؟",
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     },
   ]);
   const [input, setInput] = useState("");
@@ -52,10 +55,13 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
       id: Date.now().toString(),
       sender: "user",
       text: query,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages(prev => [...prev, userMsg]);
     if (!textToSend) setInput("");
     setLoading(true);
 
@@ -70,25 +76,33 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
       });
 
       const data = await res.json();
-      const aiReplyText = data.reply || "أهلاً بك! أنا المساعد الذكي ليوسف. يسعدني الإجابة عن كل استفساراتك!";
+      const aiReplyText =
+        data.reply ||
+        "أهلاً بك! أنا المساعد الذكي ليوسف. يسعدني الإجابة عن كل استفساراتك!";
 
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: "ai",
         text: aiReplyText,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
 
-      setMessages((prev) => [...prev, aiMsg]);
+      setMessages(prev => [...prev, aiMsg]);
     } catch (err) {
       console.error(err);
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: "ai",
         text: "حدث خطأ بسيط في الاتصال بالشبكة، ولكن بإمكانك معرفة كافة التفاصيل عن مشاريع يوسف في قسم الأعمال والمشاريع بالأسفل!",
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
-      setMessages((prev) => [...prev, errorMsg]);
+      setMessages(prev => [...prev, errorMsg]);
     } finally {
       setLoading(false);
     }
@@ -98,7 +112,6 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm animate-fade-in dir-rtl">
       {/* Drawer Container */}
       <div className="w-full max-w-md bg-[#111315] border-r border-[#36A3FF]/40 h-full flex flex-col shadow-[0_0_40px_rgba(54,163,255,0.2)] text-[#F5F3EE]">
-
         {/* Header */}
         <div className="p-4 border-b border-gray-800 flex items-center justify-between bg-[#17191C]">
           <div className="flex items-center gap-3">
@@ -110,7 +123,9 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
                 مساعد يوسف الذكي (AI Agent)
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
               </h3>
-              <p className="text-xs text-gray-400">أسئلة وأجوبة تفاعلية بالذكاء الاصطناعي</p>
+              <p className="text-xs text-gray-400">
+                أسئلة وأجوبة تفاعلية بالذكاء الاصطناعي
+              </p>
             </div>
           </div>
           <button
@@ -127,7 +142,7 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
 
         {/* Chat History Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((msg) => (
+          {messages.map(msg => (
             <div
               key={msg.id}
               className={`flex items-start gap-2.5 ${
@@ -141,7 +156,11 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
                     : "bg-[#FF754D]/20 border border-[#FF754D] text-[#FF754D]"
                 }`}
               >
-                {msg.sender === "user" ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+                {msg.sender === "user" ? (
+                  <User className="w-4 h-4" />
+                ) : (
+                  <Sparkles className="w-4 h-4" />
+                )}
               </div>
 
               <div
@@ -171,7 +190,9 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
 
         {/* Suggested Quick Questions */}
         <div className="px-4 py-2 border-t border-gray-800/60 bg-[#141619]">
-          <p className="text-[11px] text-gray-400 mb-2 font-ar-pixel">أسئلة مقترحة للبدء:</p>
+          <p className="text-[11px] text-gray-400 mb-2 font-ar-pixel">
+            أسئلة مقترحة للبدء:
+          </p>
           <div className="flex flex-wrap gap-1.5">
             {SUGGESTED_QUESTIONS.map((q, idx) => (
               <button
@@ -189,7 +210,7 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
         {/* Input Box */}
         <div className="p-3 border-t border-gray-800 bg-[#17191C]">
           <form
-            onSubmit={(e) => {
+            onSubmit={e => {
               e.preventDefault();
               handleSend();
             }}
@@ -198,7 +219,7 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
             <input
               type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={e => setInput(e.target.value)}
               placeholder="اكتب سؤالك هنا عن يوسف أو مشاريعه..."
               className="flex-1 bg-[#111315] border border-gray-700 focus:border-[#36A3FF] rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none transition-colors"
             />
@@ -212,7 +233,6 @@ export const ChatDrawer: React.FC<ChatDrawerProps> = ({ isOpen, onClose }) => {
             </button>
           </form>
         </div>
-
       </div>
     </div>
   );

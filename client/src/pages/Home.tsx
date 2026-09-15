@@ -105,21 +105,35 @@ function OrbitScene() {
     // Bright Blue Outer Wireframe
     const sphere = new THREE.Mesh(
       new THREE.IcosahedronGeometry(1.7, 2),
-      new THREE.MeshBasicMaterial({ color: 0x36a3ff, wireframe: true, transparent: true, opacity: 0.42 })
+      new THREE.MeshBasicMaterial({
+        color: 0x36a3ff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.42,
+      })
     );
     group.add(sphere);
 
     // White Inner Wireframe
     const inner = new THREE.Mesh(
       new THREE.IcosahedronGeometry(1.18, 1),
-      new THREE.MeshBasicMaterial({ color: 0xf5f3ee, wireframe: true, transparent: true, opacity: 0.25 })
+      new THREE.MeshBasicMaterial({
+        color: 0xf5f3ee,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.25,
+      })
     );
     group.add(inner);
 
     // Orange Primary Orbit Ring
     const ring = new THREE.Mesh(
       new THREE.TorusGeometry(2.16, 0.012, 12, 120),
-      new THREE.MeshBasicMaterial({ color: 0xff754d, transparent: true, opacity: 0.85 })
+      new THREE.MeshBasicMaterial({
+        color: 0xff754d,
+        transparent: true,
+        opacity: 0.85,
+      })
     );
     ring.rotation.x = Math.PI / 2.7;
     ring.rotation.y = 0.45;
@@ -128,7 +142,11 @@ function OrbitScene() {
     // Bright Blue Secondary Ring
     const ringTwo = new THREE.Mesh(
       new THREE.TorusGeometry(2.43, 0.008, 12, 120),
-      new THREE.MeshBasicMaterial({ color: 0x36a3ff, transparent: true, opacity: 0.5 })
+      new THREE.MeshBasicMaterial({
+        color: 0x36a3ff,
+        transparent: true,
+        opacity: 0.5,
+      })
     );
     ringTwo.rotation.x = -Math.PI / 3.5;
     ringTwo.rotation.z = 0.7;
@@ -146,24 +164,38 @@ function OrbitScene() {
       positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
       positions[i * 3 + 2] = radius * Math.cos(phi);
     }
-    particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    particlesGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(positions, 3)
+    );
     const particles = new THREE.Points(
       particlesGeometry,
-      new THREE.PointsMaterial({ color: 0x36a3ff, size: 0.024, transparent: true, opacity: 0.65 })
+      new THREE.PointsMaterial({
+        color: 0x36a3ff,
+        size: 0.024,
+        transparent: true,
+        opacity: 0.65,
+      })
     );
     scene.add(particles);
 
     let targetX = 0;
     let targetY = 0;
+
+    // Optimization: Cache bounding rectangle on resize to prevent layout thrashing (forced sync reflow) on pointermove
+    let mountRect = mount.getBoundingClientRect();
+
     const onPointerMove = (event: PointerEvent) => {
-      const rect = mount.getBoundingClientRect();
-      targetX = ((event.clientX - rect.left) / rect.width - 0.5) * 0.45;
-      targetY = ((event.clientY - rect.top) / rect.height - 0.5) * 0.35;
+      targetX =
+        ((event.clientX - mountRect.left) / mountRect.width - 0.5) * 0.45;
+      targetY =
+        ((event.clientY - mountRect.top) / mountRect.height - 0.5) * 0.35;
     };
     mount.addEventListener("pointermove", onPointerMove);
 
     const resize = () => {
-      const { width, height } = mount.getBoundingClientRect();
+      mountRect = mount.getBoundingClientRect();
+      const { width, height } = mountRect;
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
@@ -195,20 +227,38 @@ function OrbitScene() {
     };
   }, []);
 
-  return <div ref={mountRef} className="orbit-scene" aria-label="Interactive Three.js particle sphere" />;
+  return (
+    <div
+      ref={mountRef}
+      className="orbit-scene"
+      aria-label="Interactive Three.js particle sphere"
+    />
+  );
 }
 
 function PhotoCard3D() {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [rotX, setRotX] = useState(0);
-  const [rotY, setRotY] = useState(0);
-  const [shinePos, setShinePos] = useState({ x: 50, y: 50 });
+  const shineRef = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
   const [isHovered, setIsHovered] = useState(false);
 
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    playHoverSound();
+    if (cardRef.current) {
+      rectRef.current = cardRef.current.getBoundingClientRect();
+    }
+  };
+
+  // Optimization: Directly mutate CSS transforms and gradients on element ref during mousemove.
+  // Prevents high-frequency React state updates and VDOM re-renders on every cursor movement.
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = cardRef.current;
     if (!card) return;
-    const rect = card.getBoundingClientRect();
+    if (!rectRef.current) {
+      rectRef.current = card.getBoundingClientRect();
+    }
+    const rect = rectRef.current;
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
@@ -217,19 +267,22 @@ function PhotoCard3D() {
 
     const calcRotX = -((y - centerY) / centerY) * 16;
     const calcRotY = ((x - centerX) / centerX) * 16;
+    const shineX = (x / rect.width) * 100;
+    const shineY = (y / rect.height) * 100;
 
-    setRotX(calcRotX);
-    setRotY(calcRotY);
-    setShinePos({
-      x: (x / rect.width) * 100,
-      y: (y / rect.height) * 100,
-    });
+    card.style.transform = `perspective(1000px) rotateX(${calcRotX}deg) rotateY(${calcRotY}deg) scale3d(1.05, 1.05, 1)`;
+    if (shineRef.current) {
+      shineRef.current.style.background = `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(54, 163, 255, 0.45) 0%, rgba(255, 117, 77, 0.2) 40%, transparent 80%)`;
+    }
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setRotX(0);
-    setRotY(0);
+    rectRef.current = null;
+    if (cardRef.current) {
+      cardRef.current.style.transform =
+        "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+    }
   };
 
   return (
@@ -237,24 +290,22 @@ function PhotoCard3D() {
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
-        onMouseEnter={() => {
-          setIsHovered(true);
-          playHoverSound();
-        }}
+        onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         className="relative group w-56 h-64 md:w-64 md:h-72 shrink-0 rounded-2xl overflow-hidden border-2 border-[#36A3FF] shadow-[0_0_25px_rgba(54,163,255,0.3)] transition-transform duration-200 ease-out cursor-pointer select-none"
         style={{
-          transform: `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(${
-            isHovered ? 1.05 : 1
-          }, ${isHovered ? 1.05 : 1}, 1)`,
+          transform:
+            "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)",
           transformStyle: "preserve-3d",
         }}
       >
         {/* Specular Light Reflection Overlay */}
         <div
+          ref={shineRef}
           className="absolute inset-0 z-20 pointer-events-none transition-opacity duration-300"
           style={{
-            background: `radial-gradient(circle at ${shinePos.x}% ${shinePos.y}%, rgba(54, 163, 255, 0.45) 0%, rgba(255, 117, 77, 0.2) 40%, transparent 80%)`,
+            background:
+              "radial-gradient(circle at 50% 50%, rgba(54, 163, 255, 0.45) 0%, rgba(255, 117, 77, 0.2) 40%, transparent 80%)",
             opacity: isHovered ? 0.8 : 0,
           }}
         />
@@ -277,7 +328,9 @@ function PhotoCard3D() {
         >
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#FF754D] animate-ping" />
-            <span className="font-semibold tracking-wider text-[#F5F3EE]">YOUSEF MADBOULY</span>
+            <span className="font-semibold tracking-wider text-[#F5F3EE]">
+              YOUSEF MADBOULY
+            </span>
           </div>
           <span className="text-[#36A3FF]">FULL-STACK & AI</span>
         </div>
@@ -294,20 +347,45 @@ function PhotoCard3D() {
   );
 }
 
-function SpotlightCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function SpotlightCard({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
+
+  const onMouseEnter = () => {
+    playHoverSound();
+    if (ref.current) {
+      rectRef.current = ref.current.getBoundingClientRect();
+    }
+  };
+
+  // Optimization: Cache element rect on hover/mouseenter to avoid synchronous getBoundingClientRect() layout thrashing on every mousemove
   const onMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const card = ref.current;
     if (!card) return;
-    const rect = card.getBoundingClientRect();
+    if (!rectRef.current) {
+      rectRef.current = card.getBoundingClientRect();
+    }
+    const rect = rectRef.current;
     card.style.setProperty("--mouse-x", `${event.clientX - rect.left}px`);
     card.style.setProperty("--mouse-y", `${event.clientY - rect.top}px`);
   };
+
+  const onMouseLeave = () => {
+    rectRef.current = null;
+  };
+
   return (
     <div
       ref={ref}
       onMouseMove={onMove}
-      onMouseEnter={playHoverSound}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       className={`spotlight-card ${className}`}
     >
       {children}
@@ -315,7 +393,15 @@ function SpotlightCard({ children, className = "" }: { children: React.ReactNode
   );
 }
 
-function UiverseButton({ children, href, outline = false }: { children: React.ReactNode; href: string; outline?: boolean }) {
+function UiverseButton({
+  children,
+  href,
+  outline = false,
+}: {
+  children: React.ReactNode;
+  href: string;
+  outline?: boolean;
+}) {
   return (
     <a
       className={`uiverse-button ${outline ? "uiverse-button-outline" : ""}`}
@@ -368,13 +454,22 @@ export default function Home() {
           يوسف مدبولي <span className="font-en-pixel">/ YK-01</span>
         </button>
         <nav className={`desktop-nav ${menuOpen ? "is-open" : ""}`}>
-          <button onClick={() => scrollTo("work")} onMouseEnter={playHoverSound}>
+          <button
+            onClick={() => scrollTo("work")}
+            onMouseEnter={playHoverSound}
+          >
             الأعمال / WORK
           </button>
-          <button onClick={() => scrollTo("about")} onMouseEnter={playHoverSound}>
+          <button
+            onClick={() => scrollTo("about")}
+            onMouseEnter={playHoverSound}
+          >
             عني / ABOUT
           </button>
-          <button onClick={() => scrollTo("contact")} onMouseEnter={playHoverSound}>
+          <button
+            onClick={() => scrollTo("contact")}
+            onMouseEnter={playHoverSound}
+          >
             تواصل / CONTACT
           </button>
         </nav>
@@ -397,7 +492,11 @@ export default function Home() {
             aria-label="Toggle sound effects"
             title="Toggle Web Audio SFX"
           >
-            {soundOn ? <Volume2 size={16} className="text-[#36A3FF]" /> : <VolumeX size={16} className="text-[#9198A1]" />}
+            {soundOn ? (
+              <Volume2 size={16} className="text-[#36A3FF]" />
+            ) : (
+              <VolumeX size={16} className="text-[#9198A1]" />
+            )}
             <span className="font-en-pixel text-[0.6rem] hidden sm:inline">
               {soundOn ? "AUDIO: ON" : "AUDIO: OFF"}
             </span>
@@ -420,15 +519,22 @@ export default function Home() {
           <div className="eyebrow">
             <span className="font-en-pixel">01</span>
             <span className="eyebrow-line" />
-            <span className="font-ar-pixel text-lg">مطوّر برمجيات وذكاء اصطناعي</span>
+            <span className="font-ar-pixel text-lg">
+              مطوّر برمجيات وذكاء اصطناعي
+            </span>
           </div>
           <h1>
-            Building<br />
-            <em className="text-[#FF754D]">Useful</em><br />
+            Building
+            <br />
+            <em className="text-[#FF754D]">Useful</em>
+            <br />
             Intelligence.
           </h1>
           <p className="hero-intro">
-            أنا <strong>يوسف خميس مدبولي</strong> — مطوّر برمجيات من الإسكندرية، أعمل على بناء منتجات رقمية تجمع بين <strong>الذكاء الاصطناعي التطبيقي</strong>، و<strong>تطوير الويب متكامل الأركان (Full-Stack)</strong>.
+            أنا <strong>يوسف خميس مدبولي</strong> — مطوّر برمجيات من الإسكندرية،
+            أعمل على بناء منتجات رقمية تجمع بين{" "}
+            <strong>الذكاء الاصطناعي التطبيقي</strong>، و
+            <strong>تطوير الويب متكامل الأركان (Full-Stack)</strong>.
           </p>
           <div className="hero-actions">
             <UiverseButton href="#work">استكشف المشاريع</UiverseButton>
@@ -475,14 +581,19 @@ export default function Home() {
 
             <div>
               <p className="statement-lead">
-                أصمم وأطور أنظمة تجمع بين <em>الذكاء الاصطناعي والتنفيذ التقني المحترف</em>.
+                أصمم وأطور أنظمة تجمع بين{" "}
+                <em>الذكاء الاصطناعي والتنفيذ التقني المحترف</em>.
               </p>
               <div className="statement-body mt-4">
                 <p>
-                  أربع سنوات من التعلّم الذاتي والتطوير المستقل علّمتني بناء الدورة البرمجية كاملة — من صياغة المفهوم الأولي وحتى إطلاق منتج حقيقي يخدم المستخدمين.
+                  أربع سنوات من التعلّم الذاتي والتطوير المستقل علّمتني بناء
+                  الدورة البرمجية كاملة — من صياغة المفهوم الأولي وحتى إطلاق
+                  منتج حقيقي يخدم المستخدمين.
                 </p>
                 <p>
-                  سواء كان ذلك تدريب نموذج لغوي بالعامية المصرية (Egytronic_1.0)، أو إنشاء قائمة طعام تفاعلية تعمل عبر كود QR (Azura Cafe)، أو سبورة تعليمية ذكية للمدرسين (SmartBoard AI).
+                  سواء كان ذلك تدريب نموذج لغوي بالعامية المصرية
+                  (Egytronic_1.0)، أو إنشاء قائمة طعام تفاعلية تعمل عبر كود QR
+                  (Azura Cafe)، أو سبورة تعليمية ذكية للمدرسين (SmartBoard AI).
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3 items-center">
                   <a
@@ -536,27 +647,38 @@ export default function Home() {
           <div className="section-kicker">
             <span className="font-en-pixel">03</span>
             <span className="eyebrow-line" />
-            <span className="font-ar-pixel text-lg">معرض المشاريع الحقيقية</span>
+            <span className="font-ar-pixel text-lg">
+              معرض المشاريع الحقيقية
+            </span>
           </div>
           <h2>
             Proof of <em className="text-[#FF754D]">Practice.</em>
           </h2>
           <p>
-            مشاريع واقعية مبنية وأُطلقت للعلن — كل مشروع يعالج تحدياً تقنياً حقيقياً بلمسة هندسية متقنة.
+            مشاريع واقعية مبنية وأُطلقت للعلن — كل مشروع يعالج تحدياً تقنياً
+            حقيقياً بلمسة هندسية متقنة.
           </p>
         </div>
         <div className="project-list">
-          {projects.map((project) => (
-            <SpotlightCard key={project.number} className={`project-card accent-${project.accent}`}>
-              <div className="project-number font-en-pixel">{project.number}</div>
+          {projects.map(project => (
+            <SpotlightCard
+              key={project.number}
+              className={`project-card accent-${project.accent}`}
+            >
+              <div className="project-number font-en-pixel">
+                {project.number}
+              </div>
               <div className="project-main">
                 <div className="project-type font-en-pixel">{project.type}</div>
                 <h3>
-                  {project.title} <small className="font-ar-pixel text-lg text-[#FF754D] font-normal">({project.titleAr})</small>
+                  {project.title}{" "}
+                  <small className="font-ar-pixel text-lg text-[#FF754D] font-normal">
+                    ({project.titleAr})
+                  </small>
                 </h3>
                 <p>{project.description}</p>
                 <div className="project-stack font-en-pixel">
-                  {project.stack.map((item) => (
+                  {project.stack.map(item => (
                     <span key={item}>{item}</span>
                   ))}
                 </div>
@@ -594,7 +716,8 @@ export default function Home() {
                       <b>dialect</b> = <em>"ar-eg"</em>
                       <br />
                       <span>04</span>
-                      <b>quantization</b> = <strong className="text-[#FF754D]">"GGUF / F16"</strong>
+                      <b>quantization</b> ={" "}
+                      <strong className="text-[#FF754D]">"GGUF / F16"</strong>
                     </div>
                   </>
                 )}
@@ -637,7 +760,9 @@ export default function Home() {
                         <span />
                         <div>
                           <Sparkles size={19} className="text-[#36A3FF]" />
-                          <b className="font-en-pixel">3D & LaTeX Lesson Active</b>
+                          <b className="font-en-pixel">
+                            3D & LaTeX Lesson Active
+                          </b>
                         </div>
                         <span />
                         <span />
@@ -663,11 +788,13 @@ export default function Home() {
         <div className="toolkit-grid">
           <div>
             <h2>
-              Curious by<br />
+              Curious by
+              <br />
               <em className="text-[#FF754D]">Default.</em>
             </h2>
             <p>
-              التقنيات هي وسيلة لتجسيد الأفكار الحية. هذه هي أسلحتي البرمجية التي أعتمد عليها لبناء المنتجات من الصفر:
+              التقنيات هي وسيلة لتجسيد الأفكار الحية. هذه هي أسلحتي البرمجية
+              التي أعتمد عليها لبناء المنتجات من الصفر:
             </p>
           </div>
           <div className="skills-cloud font-en-pixel">
@@ -677,7 +804,10 @@ export default function Home() {
                 style={{ "--delay": `${index * 0.04}s` } as React.CSSProperties}
                 onMouseEnter={playHoverSound}
               >
-                {skill.name} <small className="opacity-60 text-[0.6rem] ml-1">[{skill.tag}]</small>
+                {skill.name}{" "}
+                <small className="opacity-60 text-[0.6rem] ml-1">
+                  [{skill.tag}]
+                </small>
               </span>
             ))}
           </div>
@@ -709,13 +839,17 @@ export default function Home() {
           <span className="font-ar-pixel text-lg">ابدأ المحادثة</span>
         </div>
         <h2>
-          Have a good<br />
+          Have a good
+          <br />
           <em className="text-[#FF754D]">Problem?</em>
         </h2>
         <p>
-          أنا دائمًا منفتح للمشاركات الشغوفة، والمنتجات الطموحة، والمحادثات التقنية المثمرة.
+          أنا دائمًا منفتح للمشاركات الشغوفة، والمنتجات الطموحة، والمحادثات
+          التقنية المثمرة.
         </p>
-        <UiverseButton href="mailto:Yousefkhamismadbouly@googlemail.com">إرسال بريد إلكتروني</UiverseButton>
+        <UiverseButton href="mailto:Yousefkhamismadbouly@googlemail.com">
+          إرسال بريد إلكتروني
+        </UiverseButton>
         <div className="contact-details font-en-pixel">
           <a
             href="mailto:Yousefkhamismadbouly@googlemail.com"
@@ -765,7 +899,8 @@ export default function Home() {
       <footer className="site-footer font-en-pixel">
         <span>YOUSEF MADBOULY // YK-01</span>
         <span>
-          CRAFTED WITH THREE.JS & INTENT <Zap size={13} className="text-[#36A3FF]" />
+          CRAFTED WITH THREE.JS & INTENT{" "}
+          <Zap size={13} className="text-[#36A3FF]" />
         </span>
         <span>ALEXANDRIA, EG</span>
       </footer>

@@ -8,13 +8,13 @@ Here is the exact step-by-step configuration to deploy **Yousef Khamees Medbouly
 
 When connecting your GitHub repository to **Cloudflare Pages**:
 
-| Configuration Field | Recommended Value |
-| :--- | :--- |
-| **Framework preset** | `Vite` (or `None`) |
-| **Build command** | `pnpm run build` |
-| **Build output directory** | `dist/public` |
-| **Root directory** | `/` (leave empty) |
-| **Node.js Version** | `18.x` or `20.x` |
+| Configuration Field        | Recommended Value  |
+| :------------------------- | :----------------- |
+| **Framework preset**       | `Vite` (or `None`) |
+| **Build command**          | `pnpm run build`   |
+| **Build output directory** | `dist/public`      |
+| **Root directory**         | `/` (leave empty)  |
+| **Node.js Version**        | `18.x` or `20.x`   |
 
 ---
 
@@ -22,12 +22,12 @@ When connecting your GitHub repository to **Cloudflare Pages**:
 
 Navigate to **Cloudflare Pages > Settings > Environment Variables** and add:
 
-| Key | Value | Description |
-| :--- | :--- | :--- |
+| Key                  | Value          | Description                                                  |
+| :------------------- | :------------- | :----------------------------------------------------------- |
 | `OPENROUTER_API_KEY` | `sk-or-v1-...` | Your OpenRouter API Key for live AI Personal Agent responses |
-| `NODE_VERSION` | `20` | Ensures Cloudflare uses Node.js 20 build environment |
+| `NODE_VERSION`       | `20`           | Ensures Cloudflare uses Node.js 20 build environment         |
 
-*(Note: If `OPENROUTER_API_KEY` is omitted, the AI Assistant function includes a built-in fallback response handler).*
+_(Note: If `OPENROUTER_API_KEY` is omitted, the AI Assistant function includes a built-in fallback response handler)._
 
 ---
 

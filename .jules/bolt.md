@@ -1,0 +1,3 @@
+## 2025-09-15 - High-Frequency Cursor Interaction Performance
+**Learning:** In interactive portfolio components, updating React state (`useState`) or calling `getBoundingClientRect()` inside high-frequency mouse/pointer event handlers (`mousemove`, `pointermove`) causes severe performance bottlenecks due to continuous VDOM re-rendering (60-120fps) and forced synchronous layout reflows (layout thrashing).
+**Action:** Always cache bounding rectangles on resize or hover enter (`mouseenter`/`pointerenter`), and update CSS transforms/custom properties directly on DOM element refs inside `requestAnimationFrame` loops instead of setting React state on every mouse move frame.
