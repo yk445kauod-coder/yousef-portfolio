@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
+import { useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -62,8 +61,8 @@ const projects = [
     title: "SmartBoard AI",
     titleAr: "السبورة الذكية",
     description:
-      "Interactive classroom environment transforming teacher inputs into reusable lesson plans, LaTeX mathematical formulas, TTS audio, and interactive 3D visualizations.",
-    stack: ["React", "AI SDK", "LaTeX", "Three.js", "Web Speech"],
+      "Interactive classroom environment transforming teacher inputs into reusable lesson plans, LaTeX mathematical formulas, TTS audio, and interactive UI visualizers.",
+    stack: ["React", "AI SDK", "LaTeX", "Web Speech", "Tailwind CSS"],
     href: "https://smartboard-eg.pages.dev",
     accent: "blue",
     badge: "LIVE APP",
@@ -73,7 +72,7 @@ const projects = [
 const skills = [
   { name: "React / Vite", tag: "Frontend" },
   { name: "TypeScript", tag: "Language" },
-  { name: "Three.js / WebGL", tag: "3D & Graphics" },
+  { name: "SVG / Canvas 2D", tag: "UI Effects" },
   { name: "Tailwind CSS", tag: "Styling" },
   { name: "Framer Motion", tag: "Animation" },
   { name: "PyTorch & Hugging Face", tag: "AI / ML" },
@@ -83,327 +82,86 @@ const skills = [
   { name: "Python / Express", tag: "Backend" },
 ];
 
+/* Pure 2D Cybernetic Animated Orbit Radar (Replaces 3D WebGL Canvas) */
 function OrbitScene() {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const [webglSupported, setWebglSupported] = useState(true);
-
-  useEffect(() => {
-    const mount = mountRef.current;
-    if (!mount) return;
-
-    // Safely verify WebGL availability to prevent page crashes on unsupported or low-memory devices
-    let renderer: THREE.WebGLRenderer | null = null;
-    try {
-      const canvas = document.createElement("canvas");
-      const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-      if (!gl) {
-        setWebglSupported(false);
-        return;
-      }
-
-      renderer = new THREE.WebGLRenderer({
-        alpha: true,
-        antialias: window.devicePixelRatio <= 1.5,
-        powerPreference: "low-power",
-      });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-      renderer.setClearColor(0x000000, 0);
-      mount.appendChild(renderer.domElement);
-    } catch (e) {
-      console.warn("WebGL creation failed, using CSS fallback:", e);
-      setWebglSupported(false);
-      return;
-    }
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-    camera.position.set(0, 0, 7.3);
-
-    const group = new THREE.Group();
-    scene.add(group);
-
-    // Bright Blue Outer Wireframe
-    const sphere = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.7, 2),
-      new THREE.MeshBasicMaterial({
-        color: 0x36a3ff,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.42,
-      })
-    );
-    group.add(sphere);
-
-    // White Inner Wireframe
-    const inner = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.18, 1),
-      new THREE.MeshBasicMaterial({
-        color: 0xf5f3ee,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.25,
-      })
-    );
-    group.add(inner);
-
-    // Orange Primary Orbit Ring
-    const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(2.16, 0.012, 8, 60),
-      new THREE.MeshBasicMaterial({
-        color: 0xff754d,
-        transparent: true,
-        opacity: 0.85,
-      })
-    );
-    ring.rotation.x = Math.PI / 2.7;
-    ring.rotation.y = 0.45;
-    group.add(ring);
-
-    // Bright Blue Secondary Ring
-    const ringTwo = new THREE.Mesh(
-      new THREE.TorusGeometry(2.43, 0.008, 8, 60),
-      new THREE.MeshBasicMaterial({
-        color: 0x36a3ff,
-        transparent: true,
-        opacity: 0.5,
-      })
-    );
-    ringTwo.rotation.x = -Math.PI / 3.5;
-    ringTwo.rotation.z = 0.7;
-    group.add(ringTwo);
-
-    // Particle Cloud (Optimized particle count for light GPU memory footprint)
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particleCount = 200;
-    const positions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount; i += 1) {
-      const radius = 2.8 + Math.random() * 1.5;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      positions[i * 3 + 2] = radius * Math.cos(phi);
-    }
-    particlesGeometry.setAttribute(
-      "position",
-      new THREE.BufferAttribute(positions, 3)
-    );
-    const particles = new THREE.Points(
-      particlesGeometry,
-      new THREE.PointsMaterial({
-        color: 0x36a3ff,
-        size: 0.024,
-        transparent: true,
-        opacity: 0.65,
-      })
-    );
-    scene.add(particles);
-
-    let targetX = 0;
-    let targetY = 0;
-    let mountRect = mount.getBoundingClientRect();
-
-    const onPointerMove = (event: PointerEvent) => {
-      targetX =
-        ((event.clientX - mountRect.left) / mountRect.width - 0.5) * 0.45;
-      targetY =
-        ((event.clientY - mountRect.top) / mountRect.height - 0.5) * 0.35;
-    };
-    mount.addEventListener("pointermove", onPointerMove);
-
-    const resize = () => {
-      if (!renderer) return;
-      mountRect = mount.getBoundingClientRect();
-      const { width, height } = mountRect;
-      if (width > 0 && height > 0) {
-        renderer.setSize(width, height, false);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-      }
-    };
-    resize();
-    const resizeObserver = new ResizeObserver(resize);
-    resizeObserver.observe(mount);
-
-    // Handle WebGL context loss gracefully
-    const handleContextLost = (event: Event) => {
-      event.preventDefault();
-      setWebglSupported(false);
-    };
-    const domElement = renderer.domElement;
-    domElement.addEventListener("webglcontextlost", handleContextLost, false);
-
-    let isVisible = true;
-    let frame = 0;
-
-    // Pause rendering loop when component is not in viewport
-    const visibilityObserver = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting;
-      },
-      { threshold: 0.1 }
-    );
-    visibilityObserver.observe(mount);
-
-    const animate = () => {
-      frame = requestAnimationFrame(animate);
-      if (!isVisible || !renderer) return;
-
-      group.rotation.y += 0.0025;
-      group.rotation.x += 0.0006;
-      group.rotation.x += (targetY - group.rotation.x) * 0.012;
-      group.rotation.z += (targetX - group.rotation.z) * 0.012;
-      particles.rotation.y -= 0.0006;
-      particles.rotation.x += 0.0002;
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    return () => {
-      cancelAnimationFrame(frame);
-      visibilityObserver.disconnect();
-      resizeObserver.disconnect();
-      mount.removeEventListener("pointermove", onPointerMove);
-      domElement.removeEventListener("webglcontextlost", handleContextLost);
-      if (renderer) {
-        renderer.dispose();
-        if (mount.contains(domElement)) {
-          mount.removeChild(domElement);
-        }
-      }
-      particlesGeometry.dispose();
-    };
-  }, []);
-
-  if (!webglSupported) {
-    return (
-      <div
-        className="orbit-scene flex items-center justify-center relative overflow-hidden"
-        aria-label="Animated CSS Orbit Fallback"
-      >
-        <div className="w-48 h-48 rounded-full border border-[#36A3FF]/40 animate-spin flex items-center justify-center relative duration-10000">
-          <div className="w-32 h-32 rounded-full border border-[#FF754D]/60 animate-pulse" />
-          <div className="absolute w-52 h-24 border border-[#36A3FF]/30 rounded-full rotate-45" />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
-      ref={mountRef}
-      className="orbit-scene"
-      aria-label="Interactive Three.js particle sphere"
-    />
+      className="orbit-scene flex items-center justify-center relative overflow-hidden select-none"
+      aria-label="Interactive 2D Cybernetic Orbit Radar"
+    >
+      <div className="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
+        {/* Outer Pulsing Radar Ring */}
+        <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#36A3FF]/30 animate-[spin_30s_linear_infinite]" />
+        <div className="absolute inset-4 rounded-full border border-[#36A3FF]/20 animate-[spin_20s_linear_infinite_reverse]" />
+
+        {/* Primary Elliptical Orbit Paths */}
+        <div className="absolute w-full h-48 border-2 border-[#FF754D]/70 rounded-full rotate-[-25deg] animate-pulse shadow-[0_0_15px_rgba(255,117,77,0.3)]" />
+        <div className="absolute w-[110%] h-40 border border-[#36A3FF]/80 rounded-full rotate-[35deg] animate-pulse shadow-[0_0_15px_rgba(54,163,255,0.3)]" />
+
+        {/* Cyber Concentric Geometric Crosshair */}
+        <svg
+          className="absolute inset-0 w-full h-full text-[#36A3FF]/40 pointer-events-none"
+          viewBox="0 0 200 200"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="0.75"
+        >
+          <circle cx="100" cy="100" r="85" strokeDasharray="3 3" />
+          <circle cx="100" cy="100" r="55" />
+          <circle cx="100" cy="100" r="25" strokeDasharray="2 2" />
+          <line x1="100" y1="0" x2="100" y2="200" strokeDasharray="4 4" />
+          <line x1="0" y1="100" x2="200" y2="100" strokeDasharray="4 4" />
+          <polygon
+            points="100,20 170,100 100,180 30,100"
+            stroke="#36A3FF"
+            strokeOpacity="0.25"
+            fill="none"
+          />
+        </svg>
+
+        {/* Orbiting Satellite Nodes */}
+        <div className="absolute w-full h-full animate-[spin_12s_linear_infinite]">
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#FF754D] rounded-full shadow-[0_0_10px_#FF754D]" />
+        </div>
+        <div className="absolute w-full h-full animate-[spin_18s_linear_infinite_reverse]">
+          <div className="absolute bottom-6 right-10 w-2.5 h-2.5 bg-[#36A3FF] rounded-full shadow-[0_0_10px_#36A3FF]" />
+        </div>
+      </div>
+    </div>
   );
 }
 
-function PhotoCard3D() {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const shineRef = useRef<HTMLDivElement>(null);
-  const rectRef = useRef<DOMRect | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    playHoverSound();
-    if (cardRef.current) {
-      rectRef.current = cardRef.current.getBoundingClientRect();
-    }
-  };
-
-  // Optimization: Directly mutate CSS transforms and gradients on element ref during mousemove.
-  // Prevents high-frequency React state updates and VDOM re-renders on every cursor movement.
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-    if (!rectRef.current) {
-      rectRef.current = card.getBoundingClientRect();
-    }
-    const rect = rectRef.current;
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const calcRotX = -((y - centerY) / centerY) * 16;
-    const calcRotY = ((x - centerX) / centerX) * 16;
-    const shineX = (x / rect.width) * 100;
-    const shineY = (y / rect.height) * 100;
-
-    card.style.transform = `perspective(1000px) rotateX(${calcRotX}deg) rotateY(${calcRotY}deg) scale3d(1.05, 1.05, 1)`;
-    if (shineRef.current) {
-      shineRef.current.style.background = `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(54, 163, 255, 0.45) 0%, rgba(255, 117, 77, 0.2) 40%, transparent 80%)`;
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    rectRef.current = null;
-    if (cardRef.current) {
-      cardRef.current.style.transform =
-        "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
-    }
-  };
-
+/* Pure 2D Photo Card with Brand Specular Hover & Glow Effects (No 3D depth/perspective) */
+function PhotoCard() {
   return (
-    <div className="perspective-1000">
-      <div
-        ref={cardRef}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        className="relative group w-56 h-64 md:w-64 md:h-72 shrink-0 rounded-2xl overflow-hidden border-2 border-[#36A3FF] shadow-[0_0_25px_rgba(54,163,255,0.3)] transition-transform duration-200 ease-out cursor-pointer select-none"
-        style={{
-          transform:
-            "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)",
-          transformStyle: "preserve-3d",
-        }}
-      >
-        {/* Specular Light Reflection Overlay */}
-        <div
-          ref={shineRef}
-          className="absolute inset-0 z-20 pointer-events-none transition-opacity duration-300"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 50%, rgba(54, 163, 255, 0.45) 0%, rgba(255, 117, 77, 0.2) 40%, transparent 80%)",
-            opacity: isHovered ? 0.8 : 0,
-          }}
-        />
+    <div className="relative group w-56 h-64 md:w-64 md:h-72 shrink-0 rounded-2xl overflow-hidden border-2 border-[#36A3FF] shadow-[0_0_20px_rgba(54,163,255,0.25)] hover:shadow-[0_0_30px_rgba(255,117,77,0.4)] transition-all duration-300 cursor-pointer select-none">
+      {/* Specular Glow Gradient Overlay */}
+      <div className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-tr from-[#36A3FF]/20 via-transparent to-[#FF754D]/20" />
 
-        {/* 3D Depth Image Layer */}
-        <img
-          src="/yousef.jpg"
-          alt="Yousef Madbouly"
-          className="w-full h-full object-cover grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500"
-          style={{ transform: "translateZ(20px)" }}
-        />
+      {/* Portrait Image */}
+      <img
+        src="/yousef.jpg"
+        alt="Yousef Madbouly"
+        className="w-full h-full object-cover grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+      />
 
-        {/* Dynamic Dark Gradient Backdrop */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#111315] via-transparent to-transparent opacity-80 z-10" />
+      {/* Dynamic Dark Gradient Backdrop */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#111315] via-transparent to-transparent opacity-80 z-10" />
 
-        {/* Parallax Floating 3D Badge (Yousef Madbooly) */}
-        <div
-          className="absolute bottom-3 left-3 right-3 z-30 px-3 py-1.5 bg-[#111315]/90 backdrop-blur-md border border-[#36A3FF] rounded-lg text-xs font-en-pixel text-[#FF754D] flex justify-between items-center shadow-[0_0_15px_rgba(54,163,255,0.4)]"
-          style={{ transform: "translateZ(40px)" }}
-        >
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#FF754D] animate-ping" />
-            <span className="font-semibold tracking-wider text-[#F5F3EE]">
-              YOUSEF MADBOULY
-            </span>
-          </div>
-          <span className="text-[#36A3FF]">FULL-STACK & AI</span>
+      {/* Badge (Yousef Madbouly) */}
+      <div className="absolute bottom-3 left-3 right-3 z-30 px-3 py-1.5 bg-[#111315]/90 backdrop-blur-md border border-[#36A3FF] rounded-lg text-xs font-en-pixel text-[#FF754D] flex justify-between items-center shadow-[0_0_15px_rgba(54,163,255,0.4)]">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-[#FF754D] animate-ping" />
+          <span className="font-semibold tracking-wider text-[#F5F3EE]">
+            YOUSEF MADBOULY
+          </span>
         </div>
+        <span className="text-[#36A3FF]">FULL-STACK & AI</span>
+      </div>
 
-        {/* Parallax Top Tag */}
-        <div
-          className="absolute top-3 right-3 z-30 px-2 py-0.5 bg-[#FF754D] text-[#111315] font-en-pixel text-[10px] font-bold rounded shadow-md"
-          style={{ transform: "translateZ(35px)" }}
-        >
-          ALEXANDRIA, EG
-        </div>
+      {/* Top Location Tag */}
+      <div className="absolute top-3 right-3 z-30 px-2 py-0.5 bg-[#FF754D] text-[#111315] font-en-pixel text-[10px] font-bold rounded shadow-md">
+        ALEXANDRIA, EG
       </div>
     </div>
   );
@@ -416,40 +174,12 @@ function SpotlightCard({
   children: React.ReactNode;
   className?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const rectRef = useRef<DOMRect | null>(null);
-
   const onMouseEnter = () => {
     playHoverSound();
-    if (ref.current) {
-      rectRef.current = ref.current.getBoundingClientRect();
-    }
-  };
-
-  // Optimization: Cache element rect on hover/mouseenter to avoid synchronous getBoundingClientRect() layout thrashing on every mousemove
-  const onMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    const card = ref.current;
-    if (!card) return;
-    if (!rectRef.current) {
-      rectRef.current = card.getBoundingClientRect();
-    }
-    const rect = rectRef.current;
-    card.style.setProperty("--mouse-x", `${event.clientX - rect.left}px`);
-    card.style.setProperty("--mouse-y", `${event.clientY - rect.top}px`);
-  };
-
-  const onMouseLeave = () => {
-    rectRef.current = null;
   };
 
   return (
-    <div
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      className={`spotlight-card ${className}`}
-    >
+    <div onMouseEnter={onMouseEnter} className={`spotlight-card ${className}`}>
       {children}
     </div>
   );
@@ -613,7 +343,7 @@ export default function Home() {
         <div className="hero-visual reveal-fade">
           <OrbitScene />
           <div className="orb-label orb-label-top font-en-pixel">
-            <span>LIVE SYNC // 3D CANVAS</span>
+            <span>LIVE SYNC // RADAR</span>
             <i />
           </div>
           <div className="orb-label orb-label-bottom font-en-pixel">
@@ -638,8 +368,8 @@ export default function Home() {
         </div>
         <div className="statement-grid">
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start col-span-full">
-            {/* Interactive 3D Depth Card for Yousef's Photo */}
-            <PhotoCard3D />
+            {/* Interactive Photo Card for Yousef's Photo */}
+            <PhotoCard />
 
             <div>
               <p className="statement-lead">
@@ -823,7 +553,7 @@ export default function Home() {
                         <div>
                           <Sparkles size={19} className="text-[#36A3FF]" />
                           <b className="font-en-pixel">
-                            3D & LaTeX Lesson Active
+                            LaTeX & AI Lesson Active
                           </b>
                         </div>
                         <span />
@@ -878,7 +608,7 @@ export default function Home() {
           <div>
             <Code2 size={18} className="text-[#36A3FF]" />
             <span>Frontend Engineering</span>
-            <b className="font-en-pixel">React + TypeScript + Three.js</b>
+            <b className="font-en-pixel">React + TypeScript + Tailwind CSS</b>
           </div>
           <div>
             <Cpu size={18} className="text-[#FF754D]" />
@@ -961,7 +691,7 @@ export default function Home() {
       <footer className="site-footer font-en-pixel">
         <span>YOUSEF MADBOULY // YK-01</span>
         <span>
-          CRAFTED WITH THREE.JS & INTENT{" "}
+          CRAFTED WITH PRECISION & INTENT{" "}
           <Zap size={13} className="text-[#36A3FF]" />
         </span>
         <span>ALEXANDRIA, EG</span>
