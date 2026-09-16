@@ -22,6 +22,15 @@ import {
   Zap,
 } from "lucide-react";
 
+const ASSETS = {
+  portrait: "/manus-storage/yousef-portrait_5267d578.jpg",
+  azura: "/manus-storage/azura-live_92476904.webp",
+  smartboard: "/manus-storage/smartboard-live_c05a0e9b.webp",
+  ambient: "/manus-storage/portfolio-ambient_cbd41c6e.mp3",
+  pixelGrid: "/manus-storage/pixel-ai-grid_90cee77d.jpg",
+  pixelOrbit: "/manus-storage/pixel-circuit-orbit_5f0ac662.jpg",
+};
+
 const projects = [
   {
     number: "01",
@@ -32,6 +41,7 @@ const projects = [
     stack: ["Llama 3.1", "Unsloth", "PyTorch", "Hugging Face"],
     href: "https://huggingface.co/YousefKhamis/Egytronic_1.0",
     accent: "lime",
+    image: ASSETS.pixelOrbit,
   },
   {
     number: "02",
@@ -42,6 +52,7 @@ const projects = [
     stack: ["React", "Firebase", "Groq", "Cloudflare"],
     href: "https://azura-app.pages.dev",
     accent: "orange",
+    image: ASSETS.azura,
   },
   {
     number: "03",
@@ -52,6 +63,7 @@ const projects = [
     stack: ["AI SDKs", "LaTeX", "3D", "TTS"],
     href: "https://smartboard-eg.pages.dev",
     accent: "violet",
+    image: ASSETS.smartboard,
   },
 ];
 
@@ -180,6 +192,23 @@ function OrbitScene() {
   return <div ref={mountRef} className="orbit-scene" aria-label="Interactive Three.js particle sphere" />;
 }
 
+function AudioToggle() {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const toggle = async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing) { audio.pause(); setPlaying(false); return; }
+    try { await audio.play(); setPlaying(true); } catch { setPlaying(false); }
+  };
+  return <>
+    <audio ref={audioRef} src={ASSETS.ambient} loop preload="none" />
+    <button className={`audio-toggle ${playing ? "is-playing" : ""}`} onClick={toggle} aria-label={playing ? "Pause ambient sound" : "Play ambient sound"}>
+      <span className="audio-bars"><i /><i /><i /><i /></span><span>{playing ? "SOUND ON" : "SOUND OFF"}</span>
+    </button>
+  </>;
+}
+
 function SpotlightCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const onMove = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -225,7 +254,7 @@ export default function Home() {
           <button onClick={() => scrollTo("about")}>About</button>
           <button onClick={() => scrollTo("contact")}>Contact</button>
         </nav>
-        <div className="header-actions">
+        <div className="header-actions"><AudioToggle />
           <span className="availability"><i /> Available for select work</span>
           <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
@@ -244,6 +273,7 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-visual reveal-fade">
+          <div className="portrait-wrap"><img src={ASSETS.portrait} alt="Yousef Madbouly" /><span>YOUSEF<br />MADBOULY</span></div>
           <OrbitScene />
           <div className="orb-label orb-label-top"><span>LIVE SYSTEM</span><i /></div>
           <div className="orb-label orb-label-bottom"><span>35.04° N</span><span>29.90° E</span></div>
@@ -290,7 +320,7 @@ export default function Home() {
                 <div className="project-stack">{project.stack.map((item) => <span key={item}>{item}</span>)}</div>
               </div>
               <a className="project-arrow" href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`}><ArrowUpRight size={22} /></a>
-              <div className="project-visual">
+              <div className="project-visual"><img className="project-live-image" src={project.image} alt={`${project.title} live project`} />
                 {project.accent === "lime" && <><div className="terminal-top"><span><i /><i /><i /></span><small>egytronic.py</small></div><div className="terminal-code"><span>01</span><b>model</b> = <em>"egytronic"</em><br /><span>02</span><b>language</b> = <em>"ar-eg"</em><br /><span>03</span><b>status</b> = <strong>"fine-tuned"</strong><br /><span>04</span><b>parameters</b> = <em>"8B"</em></div></>}
                 {project.accent === "orange" && <><div className="phone-frame"><div className="phone-top">AZURA <span>MENU</span></div><div className="phone-food" /><div className="phone-caption">Taste<br /><em>the moment.</em></div><div className="phone-dots"><i /><i /><i /><i /></div></div><div className="scan-pill"><Radio size={13} /> Live menu</div></>}
                 {project.accent === "violet" && <><div className="board-frame"><div className="board-toolbar"><span><BrainCircuit size={15} /> SmartBoard AI</span><i /></div><div className="board-lines"><span /><span /><span /><div><Sparkles size={19} /><b>Lesson generated</b></div><span /><span /></div></div><div className="ai-pill"><Sparkles size={13} /> Teacher mode</div></>}
