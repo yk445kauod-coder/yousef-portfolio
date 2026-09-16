@@ -7,39 +7,39 @@ export default function NotFound() {
   const [, setLocation] = useLocation();
 
   const handleGoHome = () => {
-    setLocation("/");
+    setLocation("/app");
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-      <Card className="w-full max-w-lg mx-4 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#07070f] text-[#ECEAE3] p-4 font-['IBM_Plex_Sans_Arabic']">
+      <Card className="w-full max-w-lg mx-4 shadow-xl border border-[#36A3FF]/30 bg-[#0c0c18]">
         <CardContent className="pt-8 pb-8 text-center">
           <div className="flex justify-center mb-6">
             <div className="relative">
-              <div className="absolute inset-0 bg-red-100 rounded-full animate-pulse" />
-              <AlertCircle className="relative h-16 w-16 text-red-500" />
+              <div className="absolute inset-0 bg-[#FF754D]/20 rounded-full animate-ping" />
+              <AlertCircle className="relative h-16 w-16 text-[#FF754D]" />
             </div>
           </div>
 
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">404</h1>
+          <h1 className="text-4xl font-bold text-[#FF754D] font-['Pixelify_Sans'] mb-2">404</h1>
 
-          <h2 className="text-xl font-semibold text-slate-700 mb-4">
-            Page Not Found
+          <h2 className="text-xl font-semibold text-[#36A3FF] mb-4">
+            الصفحة غير موجودة / Page Not Found
           </h2>
 
-          <p className="text-slate-600 mb-8 leading-relaxed">
-            Sorry, the page you are looking for doesn't exist.
+          <p className="text-[#ECEAE3]/70 mb-8 leading-relaxed text-sm">
+            عذراً، الصفحة التي تبحث عنها غير موجودة.
             <br />
-            It may have been moved or deleted.
+            The page you are looking for does not exist.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex justify-center">
             <Button
               onClick={handleGoHome}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+              className="bg-[#36A3FF] hover:bg-[#36A3FF]/80 text-[#07070f] font-bold px-6 py-2.5 rounded-none border border-[#36A3FF] transition-all font-['Pixelify_Sans'] shadow-[2px_2px_0px_#FF754D]"
             >
               <Home className="w-4 h-4 mr-2" />
-              Go Home
+              Go to /app
             </Button>
           </div>
         </CardContent>
