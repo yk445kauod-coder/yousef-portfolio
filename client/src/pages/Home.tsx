@@ -15,6 +15,7 @@ import {
   Mail,
   MapPin,
   Menu,
+  Phone,
   Radio,
   Sparkles,
   Terminal,
@@ -71,13 +72,13 @@ const skills = [
   "Vite",
   "Tailwind CSS",
   "Framer Motion",
-  "Firebase DB",
-  "Cloudflare Pages",
+  "Firebase DB & Auth",
+  "Cloudflare Pages & R2",
   "Python",
   "PyTorch",
   "Hugging Face",
-  "Unsloth Llama",
-  "LLM APIs",
+  "Unsloth Llama 3.1",
+  "MCP & REST APIs",
 ];
 
 function AudioToggle() {
@@ -187,17 +188,17 @@ export default function Home() {
           <div className="eyebrow">
             <span>01</span>
             <span className="eyebrow-line" />
-            <span>SOFTWARE DEVELOPER / EGYTRONIC FOUNDER</span>
+            <span>JUNIOR SOFTWARE DEVELOPER / EGYTRONIC FOUNDER</span>
           </div>
 
           <h1 className="font-['Handjet'] font-bold text-balance leading-none text-[#ECEAE3]">
-            Yousef Khamis<br />
+            Yousef Khamis Ebrahim Madbouly<br />
             <em className="text-[#FF754D] font-normal">Founder of Egytronic</em><br />
-            <span className="text-orange-secondary">& Software Developer</span>
+            <span className="text-orange-secondary">& Junior Software Developer</span>
           </h1>
 
           <p className="hero-intro font-['IBM_Plex_Sans_Arabic'] text-[#828c97]">
-            Software developer (مطور برمجيات) from Alexandria, Egypt. Founder of <strong className="text-[#ECEAE3]">Egytronic</strong> — building open AI models (<strong className="text-[#FF754D]">Egytronic_1.0 8B</strong>), full-stack web products, and EdTech platforms.
+            Junior Software Developer (مطور برمجيات) from Alexandria, Egypt (+20 127 759 3815). Grade 9 Student at Al-Fadaly Official Language School. Founder of <strong className="text-[#ECEAE3]">Egytronic</strong> — building open AI models (<strong className="text-[#FF754D]">Egytronic_1.0 8B</strong>), full-stack web products, and EdTech platforms.
           </p>
 
           <div className="hero-actions flex-wrap gap-3">
@@ -218,7 +219,7 @@ export default function Home() {
           <div className="portrait-wrap">
             <img
               src={ASSETS.portrait}
-              alt="Yousef Khamis — Founder of Egytronic & Software Developer in Alexandria, Egypt"
+              alt="Yousef Khamis Ebrahim Madbouly — Junior Software Developer & Founder of Egytronic in Alexandria, Egypt"
               width="1200"
               height="1200"
               decoding="async"
@@ -239,7 +240,7 @@ export default function Home() {
         </div>
 
         <div className="hero-meta font-['Pixelify_Sans']">
-          <span>Alexandria, Egypt // Founder of Egytronic</span>
+          <span>Alexandria, Egypt // Al-Fadaly Language School</span>
           <span>Scroll to explore milestone quest <ArrowDownRight size={15} /></span>
         </div>
       </section>
@@ -249,7 +250,7 @@ export default function Home() {
         <div className="section-kicker">
           <span>02</span>
           <span className="eyebrow-line" />
-          <span>FOUNDER & SOFTWARE DEVELOPER</span>
+          <span>FOUNDER & JUNIOR SOFTWARE DEVELOPER</span>
         </div>
         <div className="statement-grid">
           <p className="statement-lead font-['Handjet']">
@@ -257,10 +258,10 @@ export default function Home() {
           </p>
           <div className="statement-body">
             <p>
-              As Founder of Egytronic and a software developer, I focus on the end-to-end craft: from preparing multilingual datasets and fine-tuning 8B parameter language models to delivering fast web experiences deployed on Cloudflare Pages.
+              As Founder of Egytronic and a junior software developer with 4 years of independent engineering experience, I focus on the end-to-end craft: from preparing multilingual datasets and fine-tuning 8B parameter language models to delivering fast web experiences deployed on Cloudflare Pages.
             </p>
             <p>
-              My work spans LLM development, full-stack product architecture, classroom EdTech tools, and open-source models on Hugging Face.
+              Student at Al-Fadaly Official Language School in Alexandria. My work spans LLM development, full-stack product architecture, classroom EdTech tools, and open-source models on Hugging Face.
             </p>
             <a
               className="arrow-link font-['Pixelify_Sans'] text-[#FF754D]"
@@ -278,8 +279,8 @@ export default function Home() {
             <span>Parameters in Egytronic_1.0 Model</span>
           </div>
           <div>
-            <strong className="text-[#FFA500]">03</strong>
-            <span>Shipped Public Production Workflows</span>
+            <strong className="text-[#FFA500]">04 Yrs</strong>
+            <span>Independent Self-Directed Learning</span>
           </div>
           <div>
             <strong className="text-[#36A3FF]">100%</strong>
@@ -415,9 +416,14 @@ export default function Home() {
         </div>
 
         <div className="contact-details font-['Pixelify_Sans']">
-          <a href="mailto:Yousefkhamismadbouly@googlemail.com">
-            <Mail size={15} /> Yousefkhamismadbouly@googlemail.com
-          </a>
+          <div className="flex flex-col gap-1">
+            <a href="mailto:Yousefkhamismadbouly@googlemail.com">
+              <Mail size={15} /> Yousefkhamismadbouly@googlemail.com
+            </a>
+            <a href="tel:+201277593815" className="text-[#36A3FF]">
+              <Phone size={15} /> +20 127 759 3815
+            </a>
+          </div>
           <span>
             <MapPin size={15} /> Alexandria, Egypt
           </span>
@@ -428,7 +434,7 @@ export default function Home() {
             <a href="https://huggingface.co/YousefKhamis" target="_blank" rel="noreferrer" aria-label="Hugging Face Profile">
               <Globe2 size={18} />
             </a>
-            <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn Profile">
+            <a href="https://www.linkedin.com/in/yousef-khamis" target="_blank" rel="noreferrer" aria-label="LinkedIn Profile">
               <Linkedin size={18} />
             </a>
           </div>
@@ -436,8 +442,8 @@ export default function Home() {
       </section>
 
       <footer className="site-footer font-['Pixelify_Sans']">
-        <span>YOUSEF KHAMIS // FOUNDER OF EGYTRONIC</span>
-        <span>Built with React + TypeScript + AI Context <Zap size={13} className="text-[#FF754D]" /></span>
+        <span>YOUSEF KHAMIS EBRAHIM MADBOULY // FOUNDER OF EGYTRONIC</span>
+        <span>Built with React + TypeScript + Cloudflare Workers AI <Zap size={13} className="text-[#FF754D]" /></span>
         <span>Alexandria, EG</span>
       </footer>
     </main>

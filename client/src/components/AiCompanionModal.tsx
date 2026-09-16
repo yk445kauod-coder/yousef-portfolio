@@ -10,12 +10,15 @@ interface Message {
   timestamp: string;
 }
 
-const SYSTEM_PROMPT = `You are the official AI Assistant on the portfolio website of Yousef Khamis.
-Key facts about Yousef Khamis:
-- Title: Founder of Egytronic & Software Developer (مطور برمجيات)
+const SYSTEM_PROMPT = `You are the official AI Assistant on the portfolio website of Yousef Khamis Ebrahim Madbouly.
+Key facts about Yousef Khamis Ebrahim Madbouly:
+- Title: Junior Software Developer & Founder of Egytronic (مطور برمجيات)
 - Location: Alexandria, Egypt
+- Phone: +20 127 759 3815
+- Education: Al-Fadaly Official Language School (Grade 9 Student)
 - Hugging Face Profile: https://huggingface.co/YousefKhamis
 - GitHub: https://github.com/yk445kauod-coder
+- LinkedIn: https://www.linkedin.com/in/yousef-khamis
 - Email: Yousefkhamismadbouly@googlemail.com
 
 Main Projects & Accomplishments:
@@ -26,12 +29,12 @@ Main Projects & Accomplishments:
 Tech Stack & Skills:
 - React 19, TypeScript, Vite, Tailwind CSS, Framer Motion
 - Python, PyTorch, Transformers, Unsloth Llama 3.1 Fine-Tuning
-- Firebase Realtime DB, Cloudflare Pages/R2, Node.js, Express
+- Firebase Realtime DB & Auth, Cloudflare Pages/Workers/R2, Node.js, Express
 
 Guidelines for response:
 - Be concise, helpful, friendly, and professional.
 - Support both Arabic (Egyptian / Standard) and English fluently.
-- Always refer to Yousef Khamis strictly as "Founder of Egytronic" and "Software Developer" (never use CEO, AI Research Engineer, or vibe coder).
+- Always refer to Yousef Khamis strictly as "Founder of Egytronic" and "Junior Software Developer".
 - Use Markdown headers, bullet points, and links when appropriate.`;
 
 function generateSmartReply(input: string): string {
@@ -50,14 +53,14 @@ function generateSmartReply(input: string): string {
   }
 
   if (query.includes("skill") || query.includes("tech") || query.includes("stack") || query.includes("code")) {
-    return `### 💻 Technical Skills & Stack\nYousef Khamis specializes in full-stack engineering and applied AI systems:\n\n- **Languages**: TypeScript, JavaScript, Python\n- **Frontend**: React, Vite, Tailwind CSS, Framer Motion\n- **AI & ML**: PyTorch, Hugging Face Transformers, Unsloth Fine-Tuning, LLM APIs\n- **Backend & Cloud**: Firebase, Cloudflare Pages/R2, Node.js, Express`;
+    return `### 💻 Technical Skills & Stack\nYousef Khamis specializes in full-stack engineering and applied AI systems:\n\n- **Languages**: TypeScript, JavaScript, Python\n- **Frontend**: React 19, Vite, Tailwind CSS, Framer Motion\n- **AI & ML**: PyTorch, Hugging Face Transformers, Unsloth Fine-Tuning, LLM APIs\n- **Backend & Cloud**: Firebase, Cloudflare Pages/Workers/R2, Node.js, Express`;
   }
 
-  if (query.includes("contact") || query.includes("email") || query.includes("hire") || query.includes("github") || query.includes("location")) {
-    return `### 📬 Contact & Links\n- **Title**: Founder of Egytronic & Software Developer (مطور برمجيات)\n- **Location**: Alexandria, Egypt\n- **Email**: \`Yousefkhamismadbouly@googlemail.com\`\n- **Hugging Face**: [YousefKhamis Profile](https://huggingface.co/YousefKhamis)\n- **GitHub**: [yk445kauod-coder](https://github.com/yk445kauod-coder)\n- **Download AI Context**: You can download \`llm.txt\` anytime!`;
+  if (query.includes("contact") || query.includes("email") || query.includes("phone") || query.includes("hire") || query.includes("github") || query.includes("linkedin")) {
+    return `### 📬 Contact & Links\n- **Full Name**: Yousef Khamis Ebrahim Madbouly\n- **Title**: Founder of Egytronic & Junior Software Developer (مطور برمجيات)\n- **Education**: Al-Fadaly Official Language School (Grade 9 Student)\n- **Location**: Alexandria, Egypt\n- **Phone**: \`+20 127 759 3815\`\n- **Email**: \`Yousefkhamismadbouly@googlemail.com\`\n- **Hugging Face**: [YousefKhamis Profile](https://huggingface.co/YousefKhamis)\n- **GitHub**: [yk445kauod-coder](https://github.com/yk445kauod-coder)\n- **LinkedIn**: [Yousef Khamis LinkedIn](https://www.linkedin.com/in/yousef-khamis)`;
   }
 
-  return `### 🤖 Egytronic AI Assistant\nI have full context on **Yousef Khamis** (Founder of Egytronic & Software Developer):\n\n1. **Egytronic_1.0**: 8B Egyptian Arabic model on [Hugging Face](https://huggingface.co/YousefKhamis/Egytronic_1.0)\n2. **Azura Cafe**: Mobile-first QR restaurant app at [azura-app.pages.dev](https://azura-app.pages.dev)\n3. **SmartBoard AI**: Educational whiteboard app at [smartboard-eg.pages.dev](https://smartboard-eg.pages.dev)\n\nWhat would you like to know about his projects, skills, or contact info?`;
+  return `### 🤖 Egytronic AI Assistant\nI have full context on **Yousef Khamis Ebrahim Madbouly** (Founder of Egytronic & Junior Software Developer):\n\n1. **Egytronic_1.0**: 8B Egyptian Arabic model on [Hugging Face](https://huggingface.co/YousefKhamis/Egytronic_1.0)\n2. **Azura Cafe**: Mobile-first QR restaurant app at [azura-app.pages.dev](https://azura-app.pages.dev)\n3. **SmartBoard AI**: Educational whiteboard app at [smartboard-eg.pages.dev](https://smartboard-eg.pages.dev)\n\nWhat would you like to know about his projects, skills, or contact info?`;
 }
 
 function renderMarkdown(content: string) {
@@ -135,7 +138,7 @@ export function AiCompanionModal() {
     {
       id: "1",
       sender: "ai",
-      text: "### 👋 Ahlan! I'm Egytronic AI Companion\nI am connected live to Pollinations AI with full context on **Yousef Khamis** (Founder of Egytronic & Software Developer). Ask me about **Egytronic_1.0**, **Azura Cafe**, **SmartBoard AI**, or his tech stack!",
+      text: "### 👋 Ahlan! I'm Egytronic AI Companion\nPowered by Cloudflare Workers & AI with full context on **Yousef Khamis Ebrahim Madbouly** (Junior Software Developer & Founder of Egytronic). Ask me about **Egytronic_1.0**, **Azura Cafe**, **SmartBoard AI**, or his tech stack!",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -165,14 +168,26 @@ export function AiCompanionModal() {
           role: m.sender === "user" ? "user" : "assistant",
           content: m.text,
         })),
-        { role: "user", content: userPrompt },
       ];
 
-      const res = await fetch("https://text.pollinations.ai/", {
+      // 1. Send request to Cloudflare Function backend API
+      const backendRes = await fetch("/api/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: apiMessages }),
+      });
+
+      if (backendRes.ok) {
+        const data = await backendRes.json() as { text?: string };
+        if (data.text && data.text.trim()) {
+          return data.text;
+        }
+      }
+
+      // 2. Direct Pollinations Fallback if backend API is offline during local dev
+      const directRes = await fetch("https://text.pollinations.ai/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: apiMessages,
           model: "openai",
@@ -180,14 +195,16 @@ export function AiCompanionModal() {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error(`Pollinations status: ${res.status}`);
+      if (directRes.ok) {
+        const text = await directRes.text();
+        if (text && text.trim()) {
+          return text;
+        }
       }
 
-      const text = await res.text();
-      return text && text.trim() ? text : generateSmartReply(userPrompt);
+      return generateSmartReply(userPrompt);
     } catch (e) {
-      console.warn("Pollinations AI fetch failed, using smart fallback:", e);
+      console.warn("AI Completion fetch error, using smart reply fallback:", e);
       return generateSmartReply(userPrompt);
     }
   };
@@ -235,7 +252,7 @@ export function AiCompanionModal() {
 
   const copyContext = () => {
     playClickSound();
-    const ctxText = `Yousef Khamis - Founder of Egytronic & Software Developer\nHugging Face: https://huggingface.co/YousefKhamis\nGitHub: https://github.com/yk445kauod-coder\nEmail: Yousefkhamismadbouly@googlemail.com\nProjects: Egytronic_1.0, Azura Cafe, SmartBoard AI`;
+    const ctxText = `Yousef Khamis Ebrahim Madbouly - Founder of Egytronic & Junior Software Developer\nLocation: Alexandria, Egypt | Phone: +20 127 759 3815\nHugging Face: https://huggingface.co/YousefKhamis\nGitHub: https://github.com/yk445kauod-coder\nLinkedIn: https://www.linkedin.com/in/yousef-khamis\nEmail: Yousefkhamismadbouly@googlemail.com\nProjects: Egytronic_1.0, Azura Cafe, SmartBoard AI`;
     navigator.clipboard.writeText(ctxText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -283,7 +300,7 @@ export function AiCompanionModal() {
               <Bot size={18} className="text-[#FF754D]" />
               <div>
                 <div className="text-xs font-bold text-[#ECEAE3] font-['Pixelify_Sans'] tracking-wider flex items-center gap-1.5">
-                  EGYTRONIC_AI <span className="text-[9px] text-[#36A3FF] bg-[#36A3FF]/10 px-1 py-0.5 rounded border border-[#36A3FF]/30">POLLINATIONS AI</span>
+                  EGYTRONIC_AI <span className="text-[9px] text-[#36A3FF] bg-[#36A3FF]/10 px-1 py-0.5 rounded border border-[#36A3FF]/30">CLOUDFLARE WORKERS AI</span>
                 </div>
                 <div className="text-[10px] text-[#FFA500] flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#FF754D] animate-pulse" /> Live CV Model Context
@@ -349,7 +366,7 @@ export function AiCompanionModal() {
             {isLoading && (
               <div className="flex items-center gap-2 text-xs text-[#36A3FF] font-['Pixelify_Sans'] p-2 bg-[#0c0c18] border border-[#36A3FF]/20 rounded w-fit">
                 <Loader2 size={14} className="animate-spin text-[#FF754D]" />
-                <span>Thinking via Pollinations AI...</span>
+                <span>Thinking via Cloudflare Workers AI...</span>
               </div>
             )}
             <div ref={chatEndRef} />

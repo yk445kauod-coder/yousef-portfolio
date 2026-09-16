@@ -1,33 +1,43 @@
-# Yousef Khamis - Founder of Egytronic & Software Developer
+# YOUSEF KHAMIS EBRAHIM MADBOULY
+Junior Software Developer | Full-Stack Web Development | Applied AI | Founder of Egytronic
+Location: Alexandria, Egypt
+Phone: +20 127 759 3815
+Email: Yousefkhamismadbouly@googlemail.com
+GitHub: https://github.com/yk445kauod-coder
+Hugging Face: https://huggingface.co/YousefKhamis
+LinkedIn: https://www.linkedin.com/in/yousef-khamis
 
-Yousef Khamis is the Founder of Egytronic and a Software Developer (مطور برمجيات) based in Alexandria, Egypt. He specializes in full-stack web applications, applied AI workflows, and Arabic language models.
+## PROFESSIONAL SUMMARY
+Junior Software Developer and self-directed learner with four years of independent development across software engineering, full-stack web development, cloud computing, and applied AI. Built and publicly deployed responsive web applications with React, TypeScript, Firebase, Cloudflare Pages, and cloud services. Created and published Egytronic_1.0, an 8B-parameter language model fine-tuned for Egyptian Arabic. Experienced in end-to-end product development, real-time data, AI integrations, API-based workflows, and Agile-inspired iterative delivery. Strong ownership from requirements and implementation through testing, deployment, and documentation.
 
-## Identity & Core Roles
-- Title: Founder of Egytronic & Software Developer (مطور برمجيات)
-- Location: Alexandria, Egypt
-- Website: https://yousef-portfolio.pages.dev
-- Hugging Face Profile: https://huggingface.co/YousefKhamis
-- GitHub: https://github.com/yk445kauod-coder
-- Email: Yousefkhamismadbouly@googlemail.com
+## CORE COMPETENCIES
+- Full-Stack Development: responsive frontend, backend integration, APIs, authentication, real-time data, and deployment
+- Software Engineering: modular architecture, reusable components, Git-based version control, debugging, documentation, and iterative delivery
+- Cloud Computing and DevOps Fundamentals: serverless backends, Cloudflare Pages/R2, deployment workflows, environment-aware configuration, and production-oriented releases
+- AI Product Development: LLM integration, AI assistants, prompt-based applications, inference workflows, and model publishing
+- Agile Practices: incremental feature delivery, task breakdown, feedback-driven iteration, and practical product ownership
+- Educational technology, interactive learning experiences, QR-based access, teacher/student workflows, and accessibility-oriented features
 
-## Flagship Open Source Models & Projects
-1. Egytronic_1.0
-   - Description: 8B-parameter decoder-only language model fine-tuned for Egyptian Arabic context, instruction following, and dialectal nuances.
-   - Stack: Llama 3.1 8B, Unsloth, PyTorch, Transformers, Hugging Face
-   - Model URL: https://huggingface.co/YousefKhamis/Egytronic_1.0
+## EDUCATION
+Al-Fadaly Official Language School — Alexandria, Egypt | Grade 9 Student | Languages School
+
+## TECHNICAL SKILLS
+- Frontend and Web: React, Vite, TypeScript, JavaScript, Tailwind CSS, Framer Motion, Radix UI, responsive web development, mobile-first UI, component-based architecture
+- Backend, Cloud, and DevOps: Firebase Realtime Database, Firebase Authentication, real-time data synchronization, serverless backend, Cloudflare Pages, Cloudflare R2, cloud computing, deployment workflows, Git, GitHub
+- AI and Machine Learning: AI software development, AI APIs, AI SDKs, AI assistants, Generative AI, LLMs, Llama 3.1, Llama 3.3, Hugging Face Transformers, PyTorch, Unsloth, fine-tuning, dataset preparation, model inference
+- Development Tools: REST APIs, MCP (Model Context Protocol), Cursor, Claude Code, Kimi Code, Groq, Google Gemini, Pollinations.ai, llama.cpp, Lucide Icons
+
+## FEATURED AI & WEB WORK
+1. Egytronic_1.0 — Fine-Tuned 8B-Parameter Large Language Model
+   Hugging Face: https://huggingface.co/YousefKhamis/Egytronic_1.0
+   - Fine-tuned and published an 8B-parameter decoder-only Transformer model based on Llama 3.1 for Egyptian Arabic and Egyptian/local linguistic contexts.
+   - Prepared, combined, shuffled, and formatted multilingual instruction data from the Aya Dataset with Egyptian-language and Egyptian legal-domain data in an Alpaca-style structure.
+   - Used Hugging Face Transformers, Unsloth, and PyTorch for model development, then published F16 and GGUF formats for practical inference workflows.
 
 2. Azura Cafe & Restaurant
-   - Description: Mobile-first QR reel-style menu with real-time order sync and admin analytics.
-   - Stack: React, Firebase Realtime Database, Groq AI (Llama 3.3), Cloudflare Pages
-   - Live URL: https://azura-app.pages.dev
+   Live URL: https://azura-app.pages.dev
+   - Mobile-first QR reel-style menu menu with live order synchronization, admin management, and Groq/Llama 3.3 AI acceleration.
 
 3. SmartBoard AI
-   - Description: Interactive classroom whiteboard turning teacher prompts into lessons, active learning, LaTeX, and TTS.
-   - Stack: AI SDKs, LaTeX, Web Speech TTS, Cloudflare
-   - Live URL: https://smartboard-eg.pages.dev
-
-## Technical Stack
-- Languages: TypeScript, JavaScript, Python
-- Frontend: React 19, Vite, Tailwind CSS, Framer Motion
-- AI & ML: PyTorch, Hugging Face Transformers, Unsloth Fine-Tuning, LLM APIs
-- Cloud & Infrastructure: Cloudflare Pages / Workers, Firebase, Node.js, Express
+   Live URL: https://smartboard-eg.pages.dev
+   - Interactive classroom AI whiteboard transforming teacher prompts into structured lessons, visual assets, LaTeX math formulas, TTS, and active learning modes.

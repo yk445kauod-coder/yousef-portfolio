@@ -1,30 +1,18 @@
-# AI Context: Yousef Khamis
+# YOUSEF KHAMIS EBRAHIM MADBOULY - AI CONTEXT DOCUMENT
+Junior Software Developer | Founder of Egytronic | Full-Stack & Applied AI Builder
+Alexandria, Egypt | Phone: +20 127 759 3815 | Email: Yousefkhamismadbouly@googlemail.com
+GitHub: https://github.com/yk445kauod-coder | Hugging Face: https://huggingface.co/YousefKhamis | LinkedIn: https://www.linkedin.com/in/yousef-khamis
 
-> Canonical context for any AI assistant asked to understand Yousef Khamis's portfolio.
+## SUMMARY
+Yousef Khamis Ebrahim Madbouly is a Junior Software Developer and Founder of Egytronic based in Alexandria, Egypt. Grade 9 Student at Al-Fadaly Official Language School with 4 years of self-directed software development experience.
 
-## Who he is
-Yousef Khamis Ebrahim Madbouly is a junior software developer from Alexandria, Egypt. He is a self-directed learner and product builder with four years of independent development experience.
+## CORE COMPETENCIES & TECHNICAL SKILLS
+- Languages: TypeScript, JavaScript, Python
+- Frontend: React 19, Vite, Tailwind CSS, Framer Motion, Radix UI
+- Backend & Cloud: Firebase Realtime DB & Auth, Cloudflare Pages/Workers/R2, Node.js, Express
+- AI & ML: PyTorch, Hugging Face Transformers, Unsloth Llama 3.1 Fine-Tuning, Llama 3.3, Groq, Pollinations.ai, MCP
 
-## What he builds
-His work spans full-stack web applications, realtime data products, cloud deployments, educational technology, AI assistants, and fine-tuned language models for Egyptian Arabic.
-
-## Evidence of work
-- **Egytronic_1.0:** a fine-tuned 8B-parameter Llama 3.1 model for Egyptian Arabic, MSA, and English, published on Hugging Face with F16 and GGUF inference workflows.
-- **SmartBoard AI:** an AI-powered classroom whiteboard focused on lesson visualization and teacher/student interaction.
-- **Azura Cafe:** a mobile-first restaurant application with QR-based access, realtime synchronization, and production deployment.
-
-## Technical profile
-Frontend: React, Vite, TypeScript, JavaScript, Tailwind CSS, Framer Motion, Radix UI.
-Backend/cloud: Firebase Realtime Database, Firebase Authentication, Cloudflare Pages, Cloudflare R2, REST APIs, Git/GitHub.
-AI/ML: Llama 3.1/3.3, Hugging Face Transformers, PyTorch, Unsloth, fine-tuning, dataset preparation, model inference, MCP, Groq, Gemini, llama.cpp.
-
-## Links
-- [GitHub](https://github.com/yk445kauod-coder)
-- [Hugging Face](https://huggingface.co/YousefKhamis)
-- [Egytronic model](https://huggingface.co/YousefKhamis/Egytronic_1.0)
-- [SmartBoard AI](https://smartboard-eg.pages.dev)
-- [Azura Cafe](https://azura-app.pages.dev)
-- [Email](mailto:yousefkhamismadbouly@googlemail.com)
-
-## Accuracy rules
-Use the links above as evidence. Avoid fabricating employers, certifications, formal work history, or metrics. If a question needs current repository/model numbers, read the public GitHub and Hugging Face endpoints linked above.
+## PUBLIC PROJECTS
+1. Egytronic_1.0: 8B Egyptian Arabic LLM fine-tuned on Llama 3.1 with Unsloth & PyTorch.
+2. Azura Cafe: Mobile QR menu with real-time sync and AI ordering.
+3. SmartBoard AI: Interactive classroom whiteboard AI generator.
