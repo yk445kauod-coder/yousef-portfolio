@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { playClickSound, playHoverSound, playSectionSwitchSound } from "@/lib/audio";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -23,7 +24,7 @@ import {
 } from "lucide-react";
 
 const ASSETS = {
-  portrait: "/manus-storage/yousef-portrait_5267d578.jpg",
+  portrait: "/yousef.jpg",
   azura: "/manus-storage/azura-live_92476904.webp",
   smartboard: "/manus-storage/smartboard-live_c05a0e9b.webp",
   ambient: "/manus-storage/portfolio-ambient_cbd41c6e.mp3",
@@ -103,7 +104,7 @@ function OrbitScene() {
 
     const sphere = new THREE.Mesh(
       new THREE.IcosahedronGeometry(1.7, 2),
-      new THREE.MeshBasicMaterial({ color: 0xb5ff41, wireframe: true, transparent: true, opacity: 0.38 }),
+      new THREE.MeshBasicMaterial({ color: 0x36a3ff, wireframe: true, transparent: true, opacity: 0.42 }),
     );
     group.add(sphere);
 
@@ -123,7 +124,7 @@ function OrbitScene() {
 
     const ringTwo = new THREE.Mesh(
       new THREE.TorusGeometry(2.43, 0.008, 12, 120),
-      new THREE.MeshBasicMaterial({ color: 0xb5ff41, transparent: true, opacity: 0.35 }),
+      new THREE.MeshBasicMaterial({ color: 0x36a3ff, transparent: true, opacity: 0.48 }),
     );
     ringTwo.rotation.x = -Math.PI / 3.5;
     ringTwo.rotation.z = 0.7;
@@ -227,7 +228,7 @@ function SpotlightCard({ children, className = "" }: { children: React.ReactNode
 
 function UiverseButton({ children, href, outline = false }: { children: React.ReactNode; href: string; outline?: boolean }) {
   return (
-    <a className={`uiverse-button ${outline ? "uiverse-button-outline" : ""}`} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer">
+    <a className={`uiverse-button ${outline ? "uiverse-button-outline" : ""}`} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" onMouseEnter={playHoverSound} onClick={playClickSound}>
       <span>{children}</span>
       <ArrowUpRight size={16} strokeWidth={2.4} />
     </a>
@@ -238,6 +239,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const scrollTo = (id: string) => {
+    playSectionSwitchSound();
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
   };
@@ -319,7 +321,7 @@ export default function Home() {
                 <p>{project.description}</p>
                 <div className="project-stack">{project.stack.map((item) => <span key={item}>{item}</span>)}</div>
               </div>
-              <a className="project-arrow" href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`}><ArrowUpRight size={22} /></a>
+              <a className="project-arrow" href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`} onMouseEnter={playHoverSound} onClick={playClickSound}><ArrowUpRight size={22} /></a>
               <div className="project-visual"><img className="project-live-image" src={project.image} alt={`${project.title} live project`} />
                 {project.accent === "lime" && <><div className="terminal-top"><span><i /><i /><i /></span><small>egytronic.py</small></div><div className="terminal-code"><span>01</span><b>model</b> = <em>"egytronic"</em><br /><span>02</span><b>language</b> = <em>"ar-eg"</em><br /><span>03</span><b>status</b> = <strong>"fine-tuned"</strong><br /><span>04</span><b>parameters</b> = <em>"8B"</em></div></>}
                 {project.accent === "orange" && <><div className="phone-frame"><div className="phone-top">AZURA <span>MENU</span></div><div className="phone-food" /><div className="phone-caption">Taste<br /><em>the moment.</em></div><div className="phone-dots"><i /><i /><i /><i /></div></div><div className="scan-pill"><Radio size={13} /> Live menu</div></>}

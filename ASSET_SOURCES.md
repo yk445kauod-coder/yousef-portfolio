@@ -12,7 +12,7 @@ The Azura and SmartBoard captures were taken from their live published pages for
 
 ## Personal Asset
 
-The portrait used in the portfolio was supplied directly by Yousef Madbouly in the task attachment and uploaded to WebDev storage for use in the hero/about presentation.
+The portrait used in the portfolio was supplied directly by Yousef Madbouly in the task attachment and is included as `client/public/yousef.jpg` for reliable static deployment.
 
 ## Generated Supporting Asset
 
