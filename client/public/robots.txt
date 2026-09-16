@@ -1,0 +1,17 @@
+# Robots.txt for Yousef Khamis Madbouly Portfolio
+User-agent: *
+Allow: /
+Sitemap: https://yousef-portfolio.pages.dev/sitemap.xml
+
+# AI Agent & Crawler Rules (GEO / LLM Context Access)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Cursor
+Allow: /

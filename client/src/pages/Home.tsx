@@ -30,6 +30,7 @@ import {
 } from "../lib/audio";
 import { PixelMascot } from "../components/PixelMascot";
 import { ChatDrawer } from "../components/ChatDrawer";
+import { PixelScrollMilestones } from "../components/PixelScrollMilestones";
 
 const projects = [
   {
@@ -313,9 +314,11 @@ function PhotoCard3D() {
         {/* 3D Depth Image Layer */}
         <img
           src="/yousef.jpg"
-          alt="Yousef Madbouly"
+          alt="يوسف خميس مدبولي (Yousef Khamis Madbouly) - Software Developer"
           className="w-full h-full object-cover grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500"
           style={{ transform: "translateZ(20px)" }}
+          loading="eager"
+          decoding="async"
         />
 
         {/* Dynamic Dark Gradient Backdrop */}
@@ -440,6 +443,9 @@ export default function Home() {
       {/* Interactive Pixel Art Boy Mascot */}
       <PixelMascot onOpenChat={() => setChatOpen(true)} />
 
+      {/* Retro Gamified Scroll Milestone HUD */}
+      <PixelScrollMilestones />
+
       {/* AI Personal Agent Chat Drawer */}
       <ChatDrawer isOpen={chatOpen} onClose={() => setChatOpen(false)} />
 
@@ -474,6 +480,19 @@ export default function Home() {
           </button>
         </nav>
         <div className="header-actions">
+          <a
+            href="/llm.txt"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#36A3FF]/10 hover:bg-[#36A3FF]/20 border border-[#36A3FF]/40 text-[#36A3FF] text-xs font-en-pixel transition-all"
+            onMouseEnter={playHoverSound}
+            onClick={playClickSound}
+            title="llm.txt for AI agents (Cursor, Claude Code, ChatGPT)"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>llm.txt</span>
+          </a>
+
           <button
             className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FF754D]/10 hover:bg-[#FF754D]/20 border border-[#FF754D]/50 text-[#FF754D] text-xs font-ar-pixel transition-all"
             onClick={() => {
@@ -536,7 +555,7 @@ export default function Home() {
             <strong>الذكاء الاصطناعي التطبيقي</strong>، و
             <strong>تطوير الويب متكامل الأركان (Full-Stack)</strong>.
           </p>
-          <div className="hero-actions">
+          <div className="hero-actions flex-wrap">
             <UiverseButton href="#work">استكشف المشاريع</UiverseButton>
             <a
               className="text-link"
@@ -545,6 +564,16 @@ export default function Home() {
               onClick={playClickSound}
             >
               تحدث معي <ArrowDownRight size={16} />
+            </a>
+            <a
+              className="inline-flex items-center gap-1.5 text-xs font-en-pixel text-[#36A3FF] hover:text-[#FF754D] border border-[#36A3FF]/40 hover:border-[#FF754D] px-3 py-2 rounded-lg transition-all"
+              href="/llm.txt"
+              target="_blank"
+              rel="noreferrer"
+              onMouseEnter={playHoverSound}
+              onClick={playClickSound}
+            >
+              <Sparkles size={14} /> AI AGENT CONTEXT (llm.txt)
             </a>
           </div>
         </div>
@@ -598,13 +627,23 @@ export default function Home() {
                 <div className="mt-4 flex flex-wrap gap-3 items-center">
                   <a
                     className="arrow-link text-[#FF754D]"
+                    href="https://huggingface.co/YousefKhamis"
+                    target="_blank"
+                    rel="noreferrer"
+                    onMouseEnter={playHoverSound}
+                    onClick={playClickSound}
+                  >
+                    حساب Hugging Face الرسمي 🤗 <ArrowUpRight size={17} />
+                  </a>
+                  <a
+                    className="arrow-link text-[#36A3FF]"
                     href="https://github.com/yk445kauod-coder"
                     target="_blank"
                     rel="noreferrer"
                     onMouseEnter={playHoverSound}
                     onClick={playClickSound}
                   >
-                    تصفح مستودع الكود على GitHub <ArrowUpRight size={17} />
+                    GitHub <ArrowUpRight size={17} />
                   </a>
                   <button
                     onClick={() => {
@@ -861,32 +900,36 @@ export default function Home() {
           <span>
             <MapPin size={15} /> Alexandria, Egypt
           </span>
-          <div className="socials">
+          <div className="socials flex items-center gap-3">
+            <a
+              href="https://huggingface.co/YousefKhamis"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Hugging Face Profile"
+              title="Hugging Face Profile (YousefKhamis)"
+              className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#FF754D]/10 border border-[#FF754D]/40 text-[#FF754D] text-xs font-en-pixel hover:bg-[#FF754D]/20 transition-all"
+              onMouseEnter={playHoverSound}
+              onClick={playClickSound}
+            >
+              🤗 <span>HuggingFace</span>
+            </a>
             <a
               href="https://github.com/yk445kauod-coder"
               target="_blank"
               rel="noreferrer"
               aria-label="GitHub Profile"
+              title="GitHub Profile"
               onMouseEnter={playHoverSound}
               onClick={playClickSound}
             >
               <Github size={18} />
             </a>
             <a
-              href="https://huggingface.co/YousefKhamis"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Hugging Face Profile"
-              onMouseEnter={playHoverSound}
-              onClick={playClickSound}
-            >
-              <Globe2 size={18} />
-            </a>
-            <a
               href="https://www.linkedin.com"
               target="_blank"
               rel="noreferrer"
               aria-label="LinkedIn Profile"
+              title="LinkedIn Profile"
               onMouseEnter={playHoverSound}
               onClick={playClickSound}
             >

@@ -1,0 +1,15 @@
+# Yousef Khamis Madbouly - AI Agent Context File
+
+> Standard llms.txt context file for LLMs and AI Agents (Cursor, Claude Code, ChatGPT, Codex, OpenHands, Cline, Windsurf).
+
+## Context
+- Name: Yousef Khamis Madbouly
+- Role: Software Developer (Full-Stack & Applied AI)
+- Location: Alexandria, Egypt
+- Primary Links:
+  - Hugging Face: https://huggingface.co/YousefKhamis
+  - GitHub: https://github.com/yk445kauod-coder
+  - Portfolio: https://yousef-portfolio.pages.dev
+
+## Detail Link
+- Full CV Context: https://yousef-portfolio.pages.dev/llm.txt

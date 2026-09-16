@@ -1,0 +1,75 @@
+# Yousef Khamis Madbouly (YousefKhamis) - Developer Context & Full CV
+
+> Software Developer & AI Practitioner based in Alexandria, Egypt.
+> Specialized in Full-Stack Web Engineering, AI Model Fine-Tuning (LLMs), and Interactive Digital Systems.
+
+---
+
+## 👤 Personal Information
+- **Full Name:** Yousef Khamis Madbouly (يوسف خميس مدبولي)
+- **Role:** Software Developer / Full-Stack & Applied AI Practitioner
+- **Location:** Alexandria, Egypt
+- **Email:** Yousefkhamismadbouly@googlemail.com | yusf17835@gmail.com
+- **Phone / WhatsApp:** +20 1017835158
+- **GitHub:** https://github.com/yk445kauod-coder
+- **Hugging Face:** https://huggingface.co/YousefKhamis
+- **Portfolio Website:** https://yousef-portfolio.pages.dev
+
+---
+
+## 🎯 Executive Summary
+Yousef is an independent Software Developer with over 4 years of hands-on experience building full-stack applications, fine-tuning large language models (LLMs) for Arabic dialect support, and designing responsive, high-performance web interfaces.
+
+His technical approach balances strong engineering principles with practical user-centered design, covering everything from initial architecture to cloud deployment on Cloudflare Pages and Vercel.
+
+---
+
+## 🚀 Key Shipped Projects
+
+### 1. Egytronic_1.0 (AI / Model Fine-Tuning)
+- **Hugging Face Model:** https://huggingface.co/YousefKhamis/Egytronic_1.0
+- **Architecture:** Llama 3.1 8B (Decoder-only Transformer)
+- **Overview:** 8-Billion parameter language model specifically fine-tuned for Egyptian Arabic, local linguistic context, instruction datasets, and efficient GGUF/F16 edge inference.
+- **Technologies:** Llama 3.1 8B, Unsloth, PyTorch, Hugging Face Transformers, PEFT/LoRA, GGUF Quantization.
+
+### 2. Azura Cafe (Full-Stack / Reel QR Menu)
+- **Live Application:** https://azura-app.pages.dev
+- **Overview:** Mobile-first interactive QR menu platform turning traditional paper menus into dynamic TikTok/Reels-style video browsing. Features real-time Firebase syncing, Groq AI recommendation assistant, and live management admin panel.
+- **Technologies:** React, TypeScript, Tailwind CSS, Firebase Firestore/Auth, Groq AI API, Cloudflare Pages.
+
+### 3. SmartBoard AI (EdTech / Classroom Workspace)
+- **Live Application:** https://smartboard-eg.pages.dev
+- **Overview:** Interactive smart classroom workspace transforming teacher inputs into reusable lesson plans, LaTeX mathematical formulas, TTS voice synthesizers, and 3D interactive visualizations.
+- **Technologies:** React, Vercel AI SDK, LaTeX (KaTeX), Three.js, Web Speech API, Tailwind CSS.
+
+---
+
+## 💻 Tech Stack & Technical Competencies
+
+### Frontend Development
+- **Frameworks & Libraries:** React 19, TypeScript, Vite, Wouter / React Router, Tailwind CSS, Framer Motion.
+- **3D & Graphics:** Three.js, WebGL, Canvas API.
+- **UI/UX & Audio:** Web Audio API, Responsive Micro-Interactions, Pixel Art design systems.
+
+### Backend & Infrastructure
+- **Server Technologies:** Node.js, Express.js, Cloudflare Pages Functions, Edge API Workers.
+- **Databases & Cloud Services:** Firebase Firestore, Realtime Database, Authentication, Cloudflare R2 / Edge Storage.
+
+### AI & Machine Learning
+- **Frameworks:** PyTorch, Hugging Face Transformers, Unsloth, PEFT/LoRA.
+- **Models & Inference:** LLaMA 3 / 3.1, Quantization (GGUF, FP16, Q4_K_M), Groq API, Vercel AI SDK, OpenRouter API.
+
+---
+
+## 📜 Work & Learning Philosophy
+- **Practical Application:** Build real software that serves real users.
+- **Performance First:** Eliminate wasteful re-renders, optimize bundle sizes, and deliver 60 FPS user experiences.
+- **Continuous Learning:** Self-driven explorer staying at the cutting edge of AI models and web technologies.
+
+---
+
+## 📬 Contact & Links
+- **Primary Email:** Yousefkhamismadbouly@googlemail.com
+- **Hugging Face:** https://huggingface.co/YousefKhamis
+- **GitHub:** https://github.com/yk445kauod-coder
+- **Location:** Alexandria, Egypt
