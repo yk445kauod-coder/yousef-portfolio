@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { playClickSound, playHoverSound, playSectionSwitchSound } from "@/lib/audio";
+import { isSoundEnabled, setSoundEnabled, playClickSound, playHoverSound, playSectionSwitchSound } from "@/lib/audio";
 import { ScrollQuest } from "@/components/ScrollQuest";
 import { PixelOrbit2D } from "@/components/PixelOrbit2D";
 import { AiCompanionModal } from "@/components/AiCompanionModal";
@@ -25,11 +25,9 @@ import {
 
 const ASSETS = {
   portrait: "/yousef.jpg",
-  azura: "/manus-storage/azura-live_92476904.webp",
-  smartboard: "/manus-storage/smartboard-live_c05a0e9b.webp",
-  ambient: "/manus-storage/portfolio-ambient_cbd41c6e.mp3",
-  pixelGrid: "/manus-storage/pixel-ai-grid_d35ec55e.webp",
-  pixelOrbit: "/manus-storage/pixel-circuit-orbit_64514f43.webp",
+  azura: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='100%25' height='100%25' fill='%23181b17'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23ff754d' font-family='monospace' font-size='24'%3EAZURA CAFE %26 RESTAURANT%3C/text%3E%3C/svg%3E",
+  smartboard: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='100%25' height='100%25' fill='%23181b17'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2336a3ff' font-family='monospace' font-size='24'%3ESMARTBOARD AI CLASSROOM%3C/text%3E%3C/svg%3E",
+  pixelOrbit: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='100%25' height='100%25' fill='%23111315'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2336a3ff' font-family='monospace' font-size='24'%3EEGYTRONIC_1.0 8B MODEL%3C/text%3E%3C/svg%3E",
 };
 
 const projects = [
@@ -84,37 +82,26 @@ const skills = [
 ];
 
 function AudioToggle() {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [playing, setPlaying] = useState(false);
-  const toggle = async () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (playing) {
-      audio.pause();
-      setPlaying(false);
-      return;
-    }
-    try {
-      await audio.play();
-      setPlaying(true);
-    } catch {
-      setPlaying(false);
+  const [enabled, setEnabled] = useState(isSoundEnabled());
+  const toggle = () => {
+    const next = !enabled;
+    setSoundEnabled(next);
+    setEnabled(next);
+    if (next) {
+      playClickSound();
     }
   };
   return (
-    <>
-      <audio ref={audioRef} src={ASSETS.ambient} loop preload="none" />
-      <button
-        className={`audio-toggle ${playing ? "is-playing" : ""}`}
-        onClick={toggle}
-        aria-label={playing ? "Pause ambient sound" : "Play ambient sound"}
-      >
-        <span className="audio-bars">
-          <i /><i /><i /><i />
-        </span>
-        <span>{playing ? "SOUND ON" : "SOUND OFF"}</span>
-      </button>
-    </>
+    <button
+      className={`audio-toggle ${enabled ? "is-playing" : ""}`}
+      onClick={toggle}
+      aria-label={enabled ? "Disable sound effects" : "Enable sound effects"}
+    >
+      <span className="audio-bars">
+        <i /><i /><i /><i />
+      </span>
+      <span>{enabled ? "SOUND ON" : "SOUND OFF"}</span>
+    </button>
   );
 }
 
