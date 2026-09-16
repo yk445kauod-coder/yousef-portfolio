@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { isSoundEnabled, setSoundEnabled, playClickSound, playHoverSound, playSectionSwitchSound } from "@/lib/audio";
 import { ScrollQuest } from "@/components/ScrollQuest";
-import { PixelOrbit2D } from "@/components/PixelOrbit2D";
 import { AiCompanionModal } from "@/components/AiCompanionModal";
 import {
   ArrowDownRight,
@@ -150,7 +149,6 @@ export default function Home() {
 
   return (
     <main className="portfolio-shell bg-[#07070f] text-[#ECEAE3]">
-      <div className="grain" />
       <ScrollQuest />
       <AiCompanionModal />
 
@@ -228,8 +226,6 @@ export default function Home() {
             />
             <span className="font-['Pixelify_Sans']">YOUSEF KHAMIS<br />FOUNDER @ EGYTRONIC</span>
           </div>
-
-          <PixelOrbit2D />
 
           <div className="orb-label orb-label-top font-['Pixelify_Sans']">
             <span>EGYTRONIC_1.0 8B</span>
@@ -347,56 +343,6 @@ export default function Home() {
                   loading="lazy"
                   decoding="async"
                 />
-                {project.accent === "blue" && (
-                  <>
-                    <div className="terminal-top">
-                      <span>
-                        <i /><i /><i />
-                      </span>
-                      <small className="font-['Pixelify_Sans']">egytronic_1.0.py</small>
-                    </div>
-                    <div className="terminal-code font-['Pixelify_Sans']">
-                      <span>01</span><b>model</b> = <em>"Egytronic_1.0"</em><br />
-                      <span>02</span><b>base</b> = <em>"Llama-3.1-8B-Instruct"</em><br />
-                      <span>03</span><b>dialect</b> = <strong>"ar-EG"</strong><br />
-                      <span>04</span><b>huggingface</b> = <em>"YousefKhamis"</em>
-                    </div>
-                  </>
-                )}
-                {project.accent === "orange" && (
-                  <>
-                    <div className="phone-frame">
-                      <div className="phone-top font-['Pixelify_Sans']">AZURA <span>MENU</span></div>
-                      <div className="phone-food" />
-                      <div className="phone-caption font-['Handjet']">Taste<br /><em>the moment.</em></div>
-                      <div className="phone-dots"><i /><i /><i /><i /></div>
-                    </div>
-                    <div className="scan-pill font-['Pixelify_Sans']">
-                      <Radio size={13} /> QR Live Menu
-                    </div>
-                  </>
-                )}
-                {project.accent === "violet" && (
-                  <>
-                    <div className="board-frame">
-                      <div className="board-toolbar font-['Pixelify_Sans']">
-                        <span><BrainCircuit size={15} /> SmartBoard AI</span>
-                        <i />
-                      </div>
-                      <div className="board-lines">
-                        <span /><span /><span />
-                        <div>
-                          <Sparkles size={19} className="text-[#36A3FF]" />
-                          <b className="font-['Pixelify_Sans']">Lesson & Formulas Generated</b>
-                        </div>
-                        <span /><span />
-                      </div>
-                    </div>
-                    <div className="ai-pill font-['Pixelify_Sans']">
-                      <Sparkles size={13} /> Classroom Mode
-                    </div>
-                  </>
-                )}
               </div>
             </SpotlightCard>
           ))}
@@ -450,7 +396,6 @@ export default function Home() {
 
       {/* Contact Section */}
       <section className="contact-section" id="contact">
-        <div className="contact-glow" />
         <div className="section-kicker">
           <span>05</span>
           <span className="eyebrow-line" />
