@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -30,198 +31,317 @@ import {
 import { PixelMascot } from "../components/PixelMascot";
 import { ChatDrawer } from "../components/ChatDrawer";
 
-const products = [
+const projects = [
   {
     number: "01",
-    icon: "🦙",
-    type: "AI · LLM · EGYPTIAN ARABIC",
-    title: "Egytronic 16-bit",
-    titleAr: "إيجترونيك 16-بت",
-    tagline: "Fine-tuned Arabic Language Model on HuggingFace",
+    type: "AI / MODEL FINE-TUNING",
+    title: "Egytronic_1.0",
+    titleAr: "إيجـترونيك 1.0",
     description:
-      "Decoder-only language model trained on Egyptian dialect, civil/labor law, and social datasets with GGUF & F16 open weights.",
-    stack: ["LLaMA 3.1 8B", "Unsloth", "PyTorch", "Hugging Face", "GGUF"],
+      "8B-parameter decoder-only language model fine-tuned for Egyptian Arabic, local linguistic context, instruction datasets, and practical GGUF/F16 inference.",
+    stack: ["Llama 3.1 8B", "Unsloth", "PyTorch", "Hugging Face", "GGUF"],
     href: "https://huggingface.co/YousefKhamis/Egytronic_1.0",
-    accent: "gold",
-    badge: "OPEN WEIGHTS",
+    accent: "blue",
+    badge: "MODEL / HF",
   },
   {
     number: "02",
-    icon: "📋",
-    type: "EDTECH · AI TEACHER",
-    title: "Smartboard AI",
-    titleAr: "السبورة الذكية",
-    tagline: "AI-Powered Classroom Workspace",
+    type: "FULL-STACK / REEL MENU",
+    title: "Azura Cafe",
+    titleAr: "أزورا كافيه",
     description:
-      "Interactive classroom digital whiteboard transforming teacher inputs into structured lesson plans, LaTeX math formulas, and dynamic visual aids.",
-    stack: ["React", "AI SDK", "LaTeX", "Web Speech", "Tailwind CSS"],
-    href: "https://smartboard-eg.pages.dev",
-    accent: "gold",
+      "A mobile-first QR menu turning traditional menus into dynamic reel-style video browsing with real-time Firebase sync, Groq AI assistance, and live admin panel.",
+    stack: ["React", "TypeScript", "Firebase", "Groq AI", "Cloudflare Pages"],
+    href: "https://azura-app.pages.dev",
+    accent: "orange",
     badge: "LIVE APP",
   },
   {
     number: "03",
-    icon: "🏪",
-    type: "FULL-STACK · APP MARKETPLACE",
-    title: "Azura Cafe & Webstore",
-    titleAr: "أزورا كافيه والمتاجر",
-    tagline: "Dynamic QR Menu Reel Experience",
+    type: "EDTECH / AI WORKSPACE",
+    title: "SmartBoard AI",
+    titleAr: "السبورة الذكية",
     description:
-      "Mobile menu platform with real-time Firebase syncing, Groq AI assistant, and dynamic video browsing for Egyptian local businesses.",
-    stack: ["React", "TypeScript", "Firebase", "Groq AI", "Cloudflare Pages"],
-    href: "https://azura-app.pages.dev",
-    accent: "gold",
+      "Interactive classroom environment transforming teacher inputs into reusable lesson plans, LaTeX mathematical formulas, TTS audio, and interactive 3D visualizations.",
+    stack: ["React", "AI SDK", "LaTeX", "Three.js", "Web Speech"],
+    href: "https://smartboard-eg.pages.dev",
+    accent: "blue",
     badge: "LIVE APP",
   },
 ];
 
-const methodology = [
-  {
-    num: "01",
-    icon: "🧠",
-    title: "Human Architecture",
-    description: "Designing resilient system blueprints and data pipelines before implementation.",
-  },
-  {
-    num: "02",
-    icon: "🤖",
-    title: "Agent-Driven Dev",
-    description: "Leveraging custom AI agent pipelines to build faster while adhering to architectural blueprints.",
-  },
-  {
-    num: "03",
-    icon: "🔍",
-    title: "Precision Review",
-    description: "Conducting thorough engineering reviews for security, performance, and compliance.",
-  },
-  {
-    num: "04",
-    icon: "🚀",
-    title: "Ship & Iterate",
-    description: "Shipping fast, learning from real users, and continuously feeding feedback into new cycles.",
-  },
-];
-
 const skills = [
-  { name: "LLaMA / Fine-Tuning", tag: "AI Research" },
-  { name: "PyTorch & Hugging Face", tag: "ML Engineering" },
-  { name: "React / Vite / TypeScript", tag: "Frontend" },
-  { name: "Unsloth & PEFT / LoRA", tag: "Model Optimization" },
-  { name: "Tailwind CSS & Framer Motion", tag: "UI / UX" },
-  { name: "Firebase & Cloudflare Pages", tag: "Infrastructure" },
-  { name: "Web Audio & Speech API", tag: "Audio & Web" },
-  { name: "Python / Express / Node.js", tag: "Backend" },
+  { name: "React / Vite", tag: "Frontend" },
+  { name: "TypeScript", tag: "Language" },
+  { name: "Three.js / WebGL", tag: "3D & Graphics" },
+  { name: "Tailwind CSS", tag: "Styling" },
+  { name: "Framer Motion", tag: "Animation" },
+  { name: "PyTorch & Hugging Face", tag: "AI / ML" },
+  { name: "Unsloth & LLaMA", tag: "Fine-Tuning" },
+  { name: "Firebase & Cloudflare", tag: "Infrastructure" },
+  { name: "Web Audio API", tag: "Audio Effects" },
+  { name: "Python / Express", tag: "Backend" },
 ];
 
-/* Glowing Pyramid SVG Element from egytronic.pages.dev design reference */
-function PyramidGraphic() {
-  return (
-    <div className="pyramid-wrap w-full max-w-[340px] mx-auto flex items-center justify-center select-none">
-      <svg
-        viewBox="0 0 300 240"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-auto drop-shadow-[0_0_25px_rgba(255,165,0,0.3)] animate-pulse"
-      >
-        <polygon points="150,20 40,200 260,200" stroke="#FFA500" strokeWidth="1.5" fill="none" opacity="0.8" />
-        <polygon points="150,20 150,200 260,200" stroke="#FFD700" strokeWidth="1" fill="rgba(255,165,0,0.04)" />
-        <polygon points="150,20 40,200 150,200" stroke="#00FFCC" strokeWidth="1" fill="rgba(0,255,204,0.03)" />
-        <line x1="150" y1="20" x2="150" y2="200" stroke="#FFA500" strokeWidth="1.5" strokeDasharray="3 3" />
-        <line x1="80" y1="120" x2="220" y2="120" stroke="#C8A96E" strokeWidth="1" opacity="0.5" />
-        <line x1="105" y1="160" x2="195" y2="160" stroke="#C8A96E" strokeWidth="1" opacity="0.5" />
-        <circle cx="150" cy="20" r="5" fill="#FFD700" className="animate-ping" />
-      </svg>
-    </div>
-  );
-}
-
-/* 2D Orbit Cyber Radar */
 function OrbitScene() {
+  const mountRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const mount = mountRef.current;
+    if (!mount) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+    camera.position.set(0, 0, 7.3);
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    mount.appendChild(renderer.domElement);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    // Bright Blue Outer Wireframe
+    const sphere = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.7, 2),
+      new THREE.MeshBasicMaterial({
+        color: 0x36a3ff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.42,
+      })
+    );
+    group.add(sphere);
+
+    // White Inner Wireframe
+    const inner = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.18, 1),
+      new THREE.MeshBasicMaterial({
+        color: 0xf5f3ee,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.25,
+      })
+    );
+    group.add(inner);
+
+    // Orange Primary Orbit Ring
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(2.16, 0.012, 12, 120),
+      new THREE.MeshBasicMaterial({
+        color: 0xff754d,
+        transparent: true,
+        opacity: 0.85,
+      })
+    );
+    ring.rotation.x = Math.PI / 2.7;
+    ring.rotation.y = 0.45;
+    group.add(ring);
+
+    // Bright Blue Secondary Ring
+    const ringTwo = new THREE.Mesh(
+      new THREE.TorusGeometry(2.43, 0.008, 12, 120),
+      new THREE.MeshBasicMaterial({
+        color: 0x36a3ff,
+        transparent: true,
+        opacity: 0.5,
+      })
+    );
+    ringTwo.rotation.x = -Math.PI / 3.5;
+    ringTwo.rotation.z = 0.7;
+    group.add(ringTwo);
+
+    // Particle Cloud
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particleCount = 480;
+    const positions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i += 1) {
+      const radius = 2.8 + Math.random() * 1.5;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      positions[i * 3 + 2] = radius * Math.cos(phi);
+    }
+    particlesGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(positions, 3)
+    );
+    const particles = new THREE.Points(
+      particlesGeometry,
+      new THREE.PointsMaterial({
+        color: 0x36a3ff,
+        size: 0.024,
+        transparent: true,
+        opacity: 0.65,
+      })
+    );
+    scene.add(particles);
+
+    let targetX = 0;
+    let targetY = 0;
+
+    // Optimization: Cache bounding rectangle on resize to prevent layout thrashing (forced sync reflow) on pointermove
+    let mountRect = mount.getBoundingClientRect();
+
+    const onPointerMove = (event: PointerEvent) => {
+      targetX =
+        ((event.clientX - mountRect.left) / mountRect.width - 0.5) * 0.45;
+      targetY =
+        ((event.clientY - mountRect.top) / mountRect.height - 0.5) * 0.35;
+    };
+    mount.addEventListener("pointermove", onPointerMove);
+
+    const resize = () => {
+      mountRect = mount.getBoundingClientRect();
+      const { width, height } = mountRect;
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    };
+    resize();
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(mount);
+
+    let frame = 0;
+    const animate = () => {
+      frame = requestAnimationFrame(animate);
+      group.rotation.y += 0.0029;
+      group.rotation.x += 0.0007;
+      group.rotation.x += (targetY - group.rotation.x) * 0.012;
+      group.rotation.z += (targetX - group.rotation.z) * 0.012;
+      particles.rotation.y -= 0.0007;
+      particles.rotation.x += 0.00025;
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    return () => {
+      cancelAnimationFrame(frame);
+      resizeObserver.disconnect();
+      mount.removeEventListener("pointermove", onPointerMove);
+      renderer.dispose();
+      particlesGeometry.dispose();
+      mount.removeChild(renderer.domElement);
+    };
+  }, []);
+
   return (
     <div
-      className="orbit-scene flex items-center justify-center relative overflow-hidden select-none"
-      aria-label="Interactive Cybernetic Orbit Radar"
-    >
-      <div className="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
-        {/* Outer Pulsing Radar Ring */}
-        <div className="absolute inset-0 rounded-full border-2 border-dashed border-[#FFA500]/30 animate-[spin_30s_linear_infinite]" />
-        <div className="absolute inset-4 rounded-full border border-[#00FFCC]/20 animate-[spin_20s_linear_infinite_reverse]" />
-
-        {/* Primary Elliptical Orbit Paths */}
-        <div className="absolute w-full h-48 border-2 border-[#FFA500]/70 rounded-full rotate-[-25deg] animate-pulse shadow-[0_0_15px_rgba(255,165,0,0.3)]" />
-        <div className="absolute w-[110%] h-40 border border-[#00FFCC]/80 rounded-full rotate-[35deg] animate-pulse shadow-[0_0_15px_rgba(0,255,204,0.3)]" />
-
-        {/* Concentric Geometric Radar */}
-        <svg
-          className="absolute inset-0 w-full h-full text-[#C8A96E]/40 pointer-events-none"
-          viewBox="0 0 200 200"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="0.75"
-        >
-          <circle cx="100" cy="100" r="85" strokeDasharray="3 3" />
-          <circle cx="100" cy="100" r="55" />
-          <circle cx="100" cy="100" r="25" strokeDasharray="2 2" />
-          <line x1="100" y1="0" x2="100" y2="200" strokeDasharray="4 4" />
-          <line x1="0" y1="100" x2="200" y2="100" strokeDasharray="4 4" />
-          <polygon
-            points="100,20 170,100 100,180 30,100"
-            stroke="#FFA500"
-            strokeOpacity="0.3"
-            fill="none"
-          />
-        </svg>
-
-        {/* Satellite Orbit Nodes */}
-        <div className="absolute w-full h-full animate-[spin_12s_linear_infinite]">
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#FFA500] rounded-full shadow-[0_0_10px_#FFA500]" />
-        </div>
-        <div className="absolute w-full h-full animate-[spin_18s_linear_infinite_reverse]">
-          <div className="absolute bottom-6 right-10 w-2.5 h-2.5 bg-[#00FFCC] rounded-full shadow-[0_0_10px_#00FFCC]" />
-        </div>
-      </div>
-    </div>
+      ref={mountRef}
+      className="orbit-scene"
+      aria-label="Interactive Three.js particle sphere"
+    />
   );
 }
 
-/* Founder Badge Photo Card */
-function FounderCard() {
+function PhotoCard3D() {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const shineRef = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    playHoverSound();
+    if (cardRef.current) {
+      rectRef.current = cardRef.current.getBoundingClientRect();
+    }
+  };
+
+  // Optimization: Directly mutate CSS transforms and gradients on element ref during mousemove.
+  // Prevents high-frequency React state updates and VDOM re-renders on every cursor movement.
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    if (!rectRef.current) {
+      rectRef.current = card.getBoundingClientRect();
+    }
+    const rect = rectRef.current;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const calcRotX = -((y - centerY) / centerY) * 16;
+    const calcRotY = ((x - centerX) / centerX) * 16;
+    const shineX = (x / rect.width) * 100;
+    const shineY = (y / rect.height) * 100;
+
+    card.style.transform = `perspective(1000px) rotateX(${calcRotX}deg) rotateY(${calcRotY}deg) scale3d(1.05, 1.05, 1)`;
+    if (shineRef.current) {
+      shineRef.current.style.background = `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(54, 163, 255, 0.45) 0%, rgba(255, 117, 77, 0.2) 40%, transparent 80%)`;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    rectRef.current = null;
+    if (cardRef.current) {
+      cardRef.current.style.transform =
+        "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+    }
+  };
+
   return (
-    <div className="relative group w-64 h-72 md:w-72 md:h-80 shrink-0 rounded-2xl overflow-hidden border-2 border-[#FFA500] shadow-[0_0_25px_rgba(255,165,0,0.3)] hover:shadow-[0_0_35px_rgba(255,215,0,0.45)] transition-all duration-300 cursor-pointer select-none">
-      {/* Specular Glow Gradient Overlay */}
-      <div className="absolute inset-0 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-tr from-[#00FFCC]/20 via-transparent to-[#FFA500]/30" />
+    <div className="perspective-1000">
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="relative group w-56 h-64 md:w-64 md:h-72 shrink-0 rounded-2xl overflow-hidden border-2 border-[#36A3FF] shadow-[0_0_25px_rgba(54,163,255,0.3)] transition-transform duration-200 ease-out cursor-pointer select-none"
+        style={{
+          transform:
+            "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)",
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {/* Specular Light Reflection Overlay */}
+        <div
+          ref={shineRef}
+          className="absolute inset-0 z-20 pointer-events-none transition-opacity duration-300"
+          style={{
+            background:
+              "radial-gradient(circle at 50% 50%, rgba(54, 163, 255, 0.45) 0%, rgba(255, 117, 77, 0.2) 40%, transparent 80%)",
+            opacity: isHovered ? 0.8 : 0,
+          }}
+        />
 
-      {/* Portrait Image */}
-      <img
-        src="/yousef.jpg"
-        alt="Yousef Khamis - Founder of Egytronic"
-        className="w-full h-full object-cover grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
-      />
+        {/* 3D Depth Image Layer */}
+        <img
+          src="/yousef.jpg"
+          alt="Yousef Madbouly"
+          className="w-full h-full object-cover grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500"
+          style={{ transform: "translateZ(20px)" }}
+        />
 
-      {/* Dynamic Dark Gradient Backdrop */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#07070f] via-transparent to-transparent opacity-85 z-10" />
+        {/* Dynamic Dark Gradient Backdrop */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#111315] via-transparent to-transparent opacity-80 z-10" />
 
-      {/* Founder Badge */}
-      <div className="absolute bottom-3 left-3 right-3 z-30 px-3 py-2 bg-[#07070f]/95 backdrop-blur-md border border-[#FFA500] rounded-xl text-xs font-en-pixel text-[#FFA500] flex flex-col gap-1 shadow-[0_0_15px_rgba(255,165,0,0.4)]">
-        <div className="flex items-center justify-between">
+        {/* Parallax Floating 3D Badge (Yousef Madbooly) */}
+        <div
+          className="absolute bottom-3 left-3 right-3 z-30 px-3 py-1.5 bg-[#111315]/90 backdrop-blur-md border border-[#36A3FF] rounded-lg text-xs font-en-pixel text-[#FF754D] flex justify-between items-center shadow-[0_0_15px_rgba(54,163,255,0.4)]"
+          style={{ transform: "translateZ(40px)" }}
+        >
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#FFA500] animate-ping" />
-            <span className="font-bold tracking-wider text-[#ede9e3] text-sm">
-              YOUSEF KHAMIS
+            <span className="w-2 h-2 rounded-full bg-[#FF754D] animate-ping" />
+            <span className="font-semibold tracking-wider text-[#F5F3EE]">
+              YOUSEF MADBOULY
             </span>
           </div>
-          <span className="px-1.5 py-0.5 bg-[#FFA500] text-[#07070f] font-bold rounded text-[10px]">
-            FOUNDER
-          </span>
+          <span className="text-[#36A3FF]">FULL-STACK & AI</span>
         </div>
-        <div className="text-[#00FFCC] text-[11px] font-ar-pixel">
-          مؤسس إيجترونيك (Egytronic Founder)
-        </div>
-      </div>
 
-      {/* Top Tag */}
-      <div className="absolute top-3 right-3 z-30 px-2 py-0.5 bg-[#FFA500] text-[#07070f] font-en-pixel text-[10px] font-bold rounded shadow-md">
-        EGYTRONIC
+        {/* Parallax Top Tag */}
+        <div
+          className="absolute top-3 right-3 z-30 px-2 py-0.5 bg-[#FF754D] text-[#111315] font-en-pixel text-[10px] font-bold rounded shadow-md"
+          style={{ transform: "translateZ(35px)" }}
+        >
+          ALEXANDRIA, EG
+        </div>
       </div>
     </div>
   );
@@ -234,12 +354,40 @@ function SpotlightCard({
   children: React.ReactNode;
   className?: string;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
+
   const onMouseEnter = () => {
     playHoverSound();
+    if (ref.current) {
+      rectRef.current = ref.current.getBoundingClientRect();
+    }
+  };
+
+  // Optimization: Cache element rect on hover/mouseenter to avoid synchronous getBoundingClientRect() layout thrashing on every mousemove
+  const onMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const card = ref.current;
+    if (!card) return;
+    if (!rectRef.current) {
+      rectRef.current = card.getBoundingClientRect();
+    }
+    const rect = rectRef.current;
+    card.style.setProperty("--mouse-x", `${event.clientX - rect.left}px`);
+    card.style.setProperty("--mouse-y", `${event.clientY - rect.top}px`);
+  };
+
+  const onMouseLeave = () => {
+    rectRef.current = null;
   };
 
   return (
-    <div onMouseEnter={onMouseEnter} className={`spotlight-card ${className}`}>
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className={`spotlight-card ${className}`}
+    >
       {children}
     </div>
   );
@@ -289,7 +437,7 @@ export default function Home() {
 
   return (
     <main className="portfolio-shell">
-      {/* Interactive Pixel Art Mascot */}
+      {/* Interactive Pixel Art Boy Mascot */}
       <PixelMascot onOpenChat={() => setChatOpen(true)} />
 
       {/* AI Personal Agent Chat Drawer */}
@@ -303,26 +451,20 @@ export default function Home() {
           onMouseEnter={playHoverSound}
           aria-label="Back to top"
         >
-          يوسف خميس <span className="font-en-pixel">/ EGYTRONIC FOUNDER</span>
+          يوسف مدبولي <span className="font-en-pixel">/ YK-01</span>
         </button>
         <nav className={`desktop-nav ${menuOpen ? "is-open" : ""}`}>
           <button
-            onClick={() => scrollTo("products")}
+            onClick={() => scrollTo("work")}
             onMouseEnter={playHoverSound}
           >
-            المنتجات / PRODUCTS
+            الأعمال / WORK
           </button>
           <button
             onClick={() => scrollTo("about")}
             onMouseEnter={playHoverSound}
           >
             عني / ABOUT
-          </button>
-          <button
-            onClick={() => scrollTo("methodology")}
-            onMouseEnter={playHoverSound}
-          >
-            المنهجية / METHODOLOGY
           </button>
           <button
             onClick={() => scrollTo("contact")}
@@ -333,7 +475,7 @@ export default function Home() {
         </nav>
         <div className="header-actions">
           <button
-            className="flex items-center gap-1.5 px-3 py-1 rounded bg-[#FFA500]/10 hover:bg-[#FFA500]/20 border border-[#FFA500]/40 text-[#FFA500] text-xs font-ar-pixel transition-all"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FF754D]/10 hover:bg-[#FF754D]/20 border border-[#FF754D]/50 text-[#FF754D] text-xs font-ar-pixel transition-all"
             onClick={() => {
               playClickSound();
               setChatOpen(true);
@@ -351,16 +493,16 @@ export default function Home() {
             title="Toggle Web Audio SFX"
           >
             {soundOn ? (
-              <Volume2 size={16} className="text-[#FFA500]" />
+              <Volume2 size={16} className="text-[#36A3FF]" />
             ) : (
-              <VolumeX size={16} className="text-[#8a8070]" />
+              <VolumeX size={16} className="text-[#9198A1]" />
             )}
             <span className="font-en-pixel text-[0.6rem] hidden sm:inline">
               {soundOn ? "AUDIO: ON" : "AUDIO: OFF"}
             </span>
           </button>
           <span className="availability">
-            <i /> 🇪🇬 Founder @ Egytronic
+            <i /> متاه للعمل الشغوف
           </span>
           <button
             className="menu-toggle"
@@ -372,107 +514,97 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section id="top" className="hero-section">
         <div className="hero-copy reveal-up">
-          <div className="eyebrow flex items-center gap-2">
-            <span className="px-2.5 py-1 bg-[#FFA500]/10 border border-[#FFA500]/40 text-[#FFA500] font-en-pixel text-xs rounded">
-              🇪🇬 EGYTRONIC FOUNDER · ALEXANDRIA
+          <div className="eyebrow">
+            <span className="font-en-pixel">01</span>
+            <span className="eyebrow-line" />
+            <span className="font-ar-pixel text-lg">
+              مطوّر برمجيات وذكاء اصطناعي
             </span>
           </div>
           <h1>
-            Build · Ship ·
+            Building
             <br />
-            <em className="text-[#FFA500]">Innovate.</em>
+            <em className="text-[#FF754D]">Useful</em>
+            <br />
+            Intelligence.
           </h1>
           <p className="hero-intro">
-            أنا <strong>يوسف خميس</strong> — مؤسس <strong>إيجترونيك (Egytronic)</strong>. أعمل على تطوير منصات ونماذج ذكاء اصطناعي وتطبيقات ويب تجمع بين <strong>الابتكار البرمجي</strong> و <strong>الهندسة الدقيقة</strong>.
+            أنا <strong>يوسف خميس مدبولي</strong> — مطوّر برمجيات من الإسكندرية،
+            أعمل على بناء منتجات رقمية تجمع بين{" "}
+            <strong>الذكاء الاصطناعي التطبيقي</strong>، و
+            <strong>تطوير الويب متكامل الأركان (Full-Stack)</strong>.
           </p>
           <div className="hero-actions">
-            <UiverseButton href="https://huggingface.co/YousefKhamis/Egytronic_1.0">
-              🤗 HuggingFace Model
-            </UiverseButton>
+            <UiverseButton href="#work">استكشف المشاريع</UiverseButton>
             <a
               className="text-link"
-              href="#products"
+              href="mailto:Yousefkhamismadbouly@googlemail.com"
               onMouseEnter={playHoverSound}
               onClick={playClickSound}
             >
-              استكشف المشاريع <ArrowDownRight size={16} />
+              تحدث معي <ArrowDownRight size={16} />
             </a>
           </div>
-
-          <div className="flex flex-wrap items-center gap-3 mt-6 text-xs font-en-pixel text-[#8a8070]">
-            <span className="pill">
-              🇪🇬 <em>Made in Egypt</em>
-            </span>
-            <span className="pill">
-              🤗 <em>HuggingFace</em>
-            </span>
-            <span className="pill">
-              ⚡ <em>LLaMA-based</em>
-            </span>
-            <span className="pill">
-              🔓 <em>Open Weights</em>
-            </span>
-          </div>
         </div>
-
         <div className="hero-visual reveal-fade">
           <OrbitScene />
           <div className="orb-label orb-label-top font-en-pixel">
-            <span>EGYTRONIC // RADAR SYNC</span>
+            <span>LIVE SYNC // 3D CANVAS</span>
             <i />
           </div>
           <div className="orb-label orb-label-bottom font-en-pixel">
             <span>ALEXANDRIA, EG</span>
             <span>31.20° N / 29.91° E</span>
           </div>
-          <div className="orb-center font-en-pixel text-[#FFA500]">𓂀</div>
+          <div className="orb-center font-en-pixel text-[#FF754D]">YK</div>
         </div>
-
-        {/* Marquee Ticker */}
-        <div className="col-span-full mt-10 py-3 border-y border-[rgba(200,169,110,0.14)] bg-[#0c0c18] overflow-hidden text-xs font-en-pixel text-[#C8A96E]">
-          <div className="whitespace-nowrap animate-[marquee_25s_linear_infinite] flex gap-8">
-            <span>Egytronic ⟡ 16-bit AI ⟡ Smartboard AI ⟡ Webstore ⟡ Made in Egypt ⟡ LLaMA Fine-tune ⟡ Alexandria ⟡ Yousef Khamis Founder</span>
-            <span>Egytronic ⟡ 16-bit AI ⟡ Smartboard AI ⟡ Webstore ⟡ Made in Egypt ⟡ LLaMA Fine-tune ⟡ Alexandria ⟡ Yousef Khamis Founder</span>
-          </div>
+        <div className="hero-meta">
+          <span className="font-ar-pixel text-base">الإسكندرية، مصر</span>
+          <span className="font-en-pixel">
+            SCROLL TO EXPLORE <ArrowDownRight size={15} />
+          </span>
         </div>
       </section>
 
-      {/* About Founder & Vision */}
       <section className="statement-section" id="about">
         <div className="section-kicker">
-          <span>WHO WE ARE</span>
+          <span className="font-en-pixel">02</span>
           <span className="eyebrow-line" />
-          <span className="font-ar-pixel text-lg text-[#00FFCC]">رؤية إيجترونيك</span>
+          <span className="font-ar-pixel text-lg">منهجية العمل والخبرة</span>
         </div>
         <div className="statement-grid">
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start col-span-full">
-            {/* Founder Card */}
-            <FounderCard />
+            {/* Interactive 3D Depth Card for Yousef's Photo */}
+            <PhotoCard3D />
 
-            <div className="flex-1">
-              <div className="inline-block px-3 py-1 bg-[#FFA500]/10 border border-[#FFA500] text-[#FFA500] font-ar-pixel text-xs rounded mb-4">
-                مؤسس إيجترونيك (Founder)
-              </div>
+            <div>
               <p className="statement-lead">
-                أصمم وأطور أنظمة تدمج بين <em>الذكاء الاصطناعي والتنفيذ التقني العالي</em>.
+                أصمم وأطور أنظمة تجمع بين{" "}
+                <em>الذكاء الاصطناعي والتنفيذ التقني المحترف</em>.
               </p>
               <div className="statement-body mt-4">
                 <p>
-                  بصفتي <strong>مؤسس إيجترونيك</strong>، أقود عملية بناء وتدريب النماذج اللغوية وهندسة البرمجيات بالكامل — من تدريب نموذج <strong>Egytronic 16-bit</strong> المخصص للغة العربية، وحتى تطوير منصات <strong>Smartboard AI</strong> و <strong>Azura Cafe</strong>.
+                  أربع سنوات من التعلّم الذاتي والتطوير المستقل علّمتني بناء
+                  الدورة البرمجية كاملة — من صياغة المفهوم الأولي وحتى إطلاق
+                  منتج حقيقي يخدم المستخدمين.
                 </p>
-                <div className="mt-4 flex flex-wrap gap-4 items-center">
+                <p>
+                  سواء كان ذلك تدريب نموذج لغوي بالعامية المصرية
+                  (Egytronic_1.0)، أو إنشاء قائمة طعام تفاعلية تعمل عبر كود QR
+                  (Azura Cafe)، أو سبورة تعليمية ذكية للمدرسين (SmartBoard AI).
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3 items-center">
                   <a
-                    className="arrow-link text-[#FFA500]"
-                    href="https://huggingface.co/YousefKhamis"
+                    className="arrow-link text-[#FF754D]"
+                    href="https://github.com/yk445kauod-coder"
                     target="_blank"
                     rel="noreferrer"
                     onMouseEnter={playHoverSound}
                     onClick={playClickSound}
                   >
-                    تصفح أوزان النماذج على HuggingFace <ArrowUpRight size={17} />
+                    تصفح مستودع الكود على GitHub <ArrowUpRight size={17} />
                   </a>
                   <button
                     onClick={() => {
@@ -480,7 +612,7 @@ export default function Home() {
                       setChatOpen(true);
                     }}
                     onMouseEnter={playHoverSound}
-                    className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded bg-[#00FFCC]/10 border border-[#00FFCC] text-[#00FFCC] hover:bg-[#00FFCC] hover:text-[#07070f] text-xs font-ar-pixel transition-all"
+                    className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#36A3FF]/15 border border-[#36A3FF] text-[#36A3FF] hover:bg-[#36A3FF] hover:text-[#111315] text-xs font-ar-pixel transition-all"
                   >
                     <MessageSquare className="w-4 h-4" />
                     <span>تحدث مع المساعد الذكي عن خبراتي</span>
@@ -488,95 +620,82 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
-            {/* Pyramid Graphic from reference */}
-            <div className="w-full md:w-auto hidden lg:block">
-              <PyramidGraphic />
-              <div className="text-center font-en-pixel text-xs text-[#8a8070] mt-2">
-                𓂀 𓁹 𓋴𓂝𓅱𓇋
-              </div>
-            </div>
           </div>
         </div>
-
-        {/* Live Metrics */}
         <div className="metrics-row font-en-pixel">
           <div>
-            <strong className="text-[#FFA500]">03</strong>
-            <span>Live Products Shipped</span>
+            <strong className="text-[#FF754D]">04+</strong>
+            <span>Years of independent engineering</span>
           </div>
           <div>
-            <strong className="text-[#00FFCC]">16B</strong>
-            <span>LLM Parameter Capacity</span>
+            <strong className="text-[#36A3FF]">08B</strong>
+            <span>Parameters in Egytronic_1.0</span>
           </div>
           <div>
-            <strong className="text-[#FFA500]">100M</strong>
-            <span>Targeted Users</span>
+            <strong className="text-[#FF754D]">03</strong>
+            <span>Shipped production platforms</span>
           </div>
           <div>
-            <strong className="text-[#00FFCC]">∞</strong>
-            <span>Innovation & Craft</span>
+            <strong className="text-[#36A3FF]">100%</strong>
+            <span>Driven by craft & problem solving</span>
           </div>
         </div>
       </section>
 
-      {/* Products Showcase */}
-      <section className="work-section" id="products">
+      <section className="work-section" id="work">
         <div className="section-heading">
           <div className="section-kicker">
-            <span>OUR PRODUCTS</span>
+            <span className="font-en-pixel">03</span>
             <span className="eyebrow-line" />
-            <span className="font-ar-pixel text-lg text-[#00FFCC]">منتجات إيجترونيك</span>
+            <span className="font-ar-pixel text-lg">
+              معرض المشاريع الحقيقية
+            </span>
           </div>
           <h2>
-            What We've <em className="text-[#FFA500]">Built.</em>
+            Proof of <em className="text-[#FF754D]">Practice.</em>
           </h2>
           <p>
-            ثلاثة مشاريع رئيسية تم إطلاقها في مجالات الذكاء الاصطناعي اللغوي، تكنولوجيا التعليم، والتطبيقات الرقمية.
+            مشاريع واقعية مبنية وأُطلقت للعلن — كل مشروع يعالج تحدياً تقنياً
+            حقيقياً بلمسة هندسية متقنة.
           </p>
         </div>
-
         <div className="project-list">
-          {products.map(product => (
+          {projects.map(project => (
             <SpotlightCard
-              key={product.number}
-              className="project-card"
+              key={project.number}
+              className={`project-card accent-${project.accent}`}
             >
-              <div className="project-number font-en-pixel flex items-center gap-2">
-                <span>{product.number}</span>
-                <span className="text-xl">{product.icon}</span>
+              <div className="project-number font-en-pixel">
+                {project.number}
               </div>
               <div className="project-main">
-                <div className="project-type font-en-pixel">{product.type}</div>
+                <div className="project-type font-en-pixel">{project.type}</div>
                 <h3>
-                  {product.title}{" "}
-                  <small className="font-ar-pixel text-lg text-[#FFA500] font-normal">
-                    ({product.titleAr})
+                  {project.title}{" "}
+                  <small className="font-ar-pixel text-lg text-[#FF754D] font-normal">
+                    ({project.titleAr})
                   </small>
                 </h3>
-                <p className="text-[#FFA500] text-xs font-semibold mb-1">
-                  {product.tagline}
-                </p>
-                <p>{product.description}</p>
+                <p>{project.description}</p>
                 <div className="project-stack font-en-pixel">
-                  {product.stack.map(item => (
+                  {project.stack.map(item => (
                     <span key={item}>{item}</span>
                   ))}
                 </div>
               </div>
               <a
                 className="project-arrow"
-                href={product.href}
+                href={project.href}
                 target="_blank"
                 rel="noreferrer"
-                aria-label={`Open ${product.title}`}
+                aria-label={`Open ${project.title}`}
                 onMouseEnter={playHoverSound}
                 onClick={playClickSound}
               >
                 <ArrowUpRight size={24} />
               </a>
               <div className="project-visual">
-                {product.number === "01" && (
+                {project.accent === "blue" && project.number === "01" && (
                   <>
                     <div className="terminal-top font-en-pixel">
                       <span>
@@ -584,54 +703,73 @@ export default function Home() {
                         <i />
                         <i />
                       </span>
-                      <small>egytronic_16bit.py</small>
+                      <small>egytronic_1.0.py</small>
                     </div>
                     <div className="terminal-code font-en-pixel">
                       <span>01</span>
                       <b>model</b> = <em>"Egytronic_1.0"</em>
                       <br />
                       <span>02</span>
-                      <b>founder</b> = <em>"Yousef Khamis"</em>
+                      <b>architecture</b> = <em>"Llama-3.1-8B"</em>
                       <br />
                       <span>03</span>
-                      <b>dialect</b> = <em>"ar-eg / Masri"</em>
+                      <b>dialect</b> = <em>"ar-eg"</em>
                       <br />
                       <span>04</span>
-                      <b>weights</b> ={" "}
-                      <strong className="text-[#FFA500]">"HuggingFace Open"</strong>
+                      <b>quantization</b> ={" "}
+                      <strong className="text-[#FF754D]">"GGUF / F16"</strong>
                     </div>
                   </>
                 )}
-                {product.number === "02" && (
+                {project.accent === "orange" && (
                   <>
-                    <div className="board-frame p-4 w-full h-full flex flex-col justify-center items-center">
-                      <div className="board-toolbar font-en-pixel w-full flex justify-between mb-2">
-                        <span className="text-[#00FFCC] flex items-center gap-1">
+                    <div className="phone-frame">
+                      <div className="phone-top font-en-pixel">
+                        AZURA <span>REEL MENU</span>
+                      </div>
+                      <div className="phone-food" />
+                      <div className="phone-caption">
+                        Taste
+                        <br />
+                        <em>The Moment.</em>
+                      </div>
+                      <div className="phone-dots">
+                        <i />
+                        <i />
+                        <i />
+                        <i />
+                      </div>
+                    </div>
+                    <div className="scan-pill font-en-pixel">
+                      <Radio size={13} /> LIVE DEPLOYED APP
+                    </div>
+                  </>
+                )}
+                {project.accent === "blue" && project.number === "03" && (
+                  <>
+                    <div className="board-frame">
+                      <div className="board-toolbar font-en-pixel">
+                        <span>
                           <BrainCircuit size={15} /> SmartBoard AI
                         </span>
+                        <i />
                       </div>
-                      <div className="text-center font-en-pixel text-xs text-[#ede9e3]">
-                        <Sparkles size={20} className="text-[#FFA500] mx-auto mb-1" />
-                        <b>AI Teacher Agent Active</b>
-                      </div>
-                    </div>
-                    <div className="ai-pill font-en-pixel absolute bottom-2 right-2 text-[#00FFCC] text-[10px]">
-                      EDTECH MODE
-                    </div>
-                  </>
-                )}
-                {product.number === "03" && (
-                  <>
-                    <div className="phone-frame text-center p-3">
-                      <div className="phone-top font-en-pixel text-[10px] text-[#FFA500]">
-                        AZURA MENU
-                      </div>
-                      <div className="my-2 font-en-pixel text-xs text-[#ede9e3]">
-                        Reel Browsing & AI
+                      <div className="board-lines">
+                        <span />
+                        <span />
+                        <span />
+                        <div>
+                          <Sparkles size={19} className="text-[#36A3FF]" />
+                          <b className="font-en-pixel">
+                            3D & LaTeX Lesson Active
+                          </b>
+                        </div>
+                        <span />
+                        <span />
                       </div>
                     </div>
-                    <div className="scan-pill font-en-pixel absolute bottom-2 right-2 text-[#FFA500] text-[10px]">
-                      <Radio size={12} /> LIVE DEPLOYED
+                    <div className="ai-pill font-en-pixel">
+                      <Sparkles size={13} /> TEACHER MODE
                     </div>
                   </>
                 )}
@@ -641,62 +779,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Methodology Section */}
-      <section className="statement-section" id="methodology">
-        <div className="section-kicker">
-          <span>METHODOLOGY</span>
-          <span className="eyebrow-line" />
-          <span className="font-ar-pixel text-lg text-[#00FFCC]">منهجية العمل</span>
-        </div>
-        <div className="statement-heading mb-8">
-          <h2>
-            How We <em className="text-[#FFA500]">Build.</em>
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[#C8A96E]/14 border border-[#C8A96E]/14">
-          {methodology.map(item => (
-            <div
-              key={item.num}
-              className="p-6 bg-[#0c0c18] flex flex-col justify-between hover:bg-[#FFA500]/5 transition-colors"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3 font-en-pixel">
-                  <span className="text-[#FFA500] text-lg font-bold">{item.num}</span>
-                  <span className="text-2xl">{item.icon}</span>
-                </div>
-                <h3 className="text-base font-bold text-[#ede9e3] mb-2">{item.title}</h3>
-                <p className="text-xs text-[#8a8070] leading-relaxed">{item.description}</p>
-              </div>
-              <div className="mt-4 pt-3 border-t border-[rgba(200,169,110,0.14)] text-[10px] font-en-pixel text-[#00FFCC]">
-                METHODOLOGY
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Tech Arsenal */}
       <section className="toolkit-section">
         <div className="section-kicker">
-          <span>TECH STACK</span>
+          <span className="font-en-pixel">04</span>
           <span className="eyebrow-line" />
-          <span className="font-ar-pixel text-lg text-[#00FFCC]">التقنيات والترسانة</span>
+          <span className="font-ar-pixel text-lg">التقنيات والأدوات</span>
         </div>
         <div className="toolkit-grid">
           <div>
             <h2>
-              Our Tech
+              Curious by
               <br />
-              <em className="text-[#FFA500]">Arsenal.</em>
+              <em className="text-[#FF754D]">Default.</em>
             </h2>
             <p>
-              التقنيات التي نستخدمها في إيجترونيك لبناء وتدريب النماذج والمنصات التفاعلية:
+              التقنيات هي وسيلة لتجسيد الأفكار الحية. هذه هي أسلحتي البرمجية
+              التي أعتمد عليها لبناء المنتجات من الصفر:
             </p>
           </div>
           <div className="skills-cloud font-en-pixel">
             {skills.map((skill, index) => (
-              <span key={skill.name} onMouseEnter={playHoverSound}>
+              <span
+                key={skill.name}
+                style={{ "--delay": `${index * 0.04}s` } as React.CSSProperties}
+                onMouseEnter={playHoverSound}
+              >
                 {skill.name}{" "}
                 <small className="opacity-60 text-[0.6rem] ml-1">
                   [{skill.tag}]
@@ -707,38 +814,38 @@ export default function Home() {
         </div>
         <div className="stack-notes">
           <div>
-            <Code2 size={18} className="text-[#00FFCC]" />
-            <span>AI & ML Research</span>
-            <b className="font-en-pixel">LLaMA + HuggingFace + PyTorch</b>
+            <Code2 size={18} className="text-[#36A3FF]" />
+            <span>Frontend Engineering</span>
+            <b className="font-en-pixel">React + TypeScript + Three.js</b>
           </div>
           <div>
-            <Cpu size={18} className="text-[#FFA500]" />
-            <span>AI Systems & Fine-Tuning</span>
-            <b className="font-en-pixel">Unsloth + Transformers + GGUF</b>
+            <Cpu size={18} className="text-[#FF754D]" />
+            <span>Applied AI & Fine-Tuning</span>
+            <b className="font-en-pixel">PyTorch + Hugging Face + Unsloth</b>
           </div>
           <div>
-            <Layers3 size={18} className="text-[#00FFCC]" />
-            <span>Full-Stack Infrastructure</span>
-            <b className="font-en-pixel">React + Firebase + Cloudflare</b>
+            <Layers3 size={18} className="text-[#36A3FF]" />
+            <span>Product Infrastructure</span>
+            <b className="font-en-pixel">Firebase + Cloudflare Pages</b>
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
       <section className="contact-section" id="contact">
         <div className="contact-glow" />
         <div className="section-kicker">
-          <span>CONTACT</span>
+          <span className="font-en-pixel">05</span>
           <span className="eyebrow-line" />
-          <span className="font-ar-pixel text-lg text-[#FFA500]">تواصل مع المؤسس</span>
+          <span className="font-ar-pixel text-lg">ابدأ المحادثة</span>
         </div>
         <h2>
-          Build with
+          Have a good
           <br />
-          <em className="text-[#FFA500]">Egytronic.</em>
+          <em className="text-[#FF754D]">Problem?</em>
         </h2>
         <p>
-          يسعدني التواصل معك لبحث الاستشارات التقنية، أبحاث النماذج اللغوية، أو التعاون التقني في إيجترونيك.
+          أنا دائمًا منفتح للمشاركات الشغوفة، والمنتجات الطموحة، والمحادثات
+          التقنية المثمرة.
         </p>
         <UiverseButton href="mailto:Yousefkhamismadbouly@googlemail.com">
           إرسال بريد إلكتروني
@@ -790,10 +897,10 @@ export default function Home() {
       </section>
 
       <footer className="site-footer font-en-pixel">
-        <span>EGYTRONIC © 2025 // YOUSEF KHAMIS (FOUNDER)</span>
+        <span>YOUSEF MADBOULY // YK-01</span>
         <span>
-          CRAFTED WITH PRECISION & INTENT{" "}
-          <Zap size={13} className="text-[#FFA500]" />
+          CRAFTED WITH THREE.JS & INTENT{" "}
+          <Zap size={13} className="text-[#36A3FF]" />
         </span>
         <span>ALEXANDRIA, EG</span>
       </footer>
