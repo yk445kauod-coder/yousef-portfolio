@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Bot, X, Send, Sparkles, Terminal, Minimize2, Maximize2, Download, Copy, Check } from "lucide-react";
+import { Bot, X, Send, Sparkles, Minimize2, Maximize2, Download, Copy, Check } from "lucide-react";
+import { Mascot } from "page-mascot";
 import { playClickSound, playHoverSound } from "@/lib/audio";
 
 interface Message {
@@ -39,10 +40,8 @@ const KNOWLEDGE_BASE = {
 };
 
 function renderMarkdown(content: string) {
-  // Convert Markdown formatting to JSX elements safely
   const lines = content.split("\n");
   return lines.map((line, lineIdx) => {
-    // Headers
     if (line.startsWith("### ")) {
       return <h4 key={lineIdx} className="text-sm font-bold text-[#36A3FF] mt-2 mb-1 font-['Pixelify_Sans']">{line.replace("### ", "")}</h4>;
     }
@@ -50,7 +49,6 @@ function renderMarkdown(content: string) {
       return <h3 key={lineIdx} className="text-base font-bold text-[#FFA500] mt-2 mb-1 font-['Pixelify_Sans']">{line.replace(/^#+\s*/, "")}</h3>;
     }
 
-    // Unordered lists
     if (line.startsWith("- ") || line.startsWith("* ")) {
       const listText = line.replace(/^[-*]\s*/, "");
       return (
@@ -60,7 +58,6 @@ function renderMarkdown(content: string) {
       );
     }
 
-    // Numbered lists
     if (/^\d+\.\s/.test(line)) {
       const listText = line.replace(/^\d+\.\s*/, "");
       return (
@@ -70,7 +67,6 @@ function renderMarkdown(content: string) {
       );
     }
 
-    // Code blocks / inline code
     if (line.startsWith("```")) {
       return <div key={lineIdx} className="my-1 border-l-2 border-[#36A3FF] bg-[#0c0c18] p-1.5 font-mono text-[11px] text-[#36A3FF]">{line.replace(/```/g, "")}</div>;
     }
@@ -88,7 +84,6 @@ function renderMarkdown(content: string) {
 }
 
 function parseInline(text: string) {
-  // Regex to split bold **text**, code `text`, and markdown links [label](url)
   const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g);
   return parts.map((part, idx) => {
     if (part.startsWith("**") && part.endsWith("**")) {
@@ -191,12 +186,21 @@ export function AiCompanionModal() {
   ]);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
     }
   }, [messages, isOpen]);
+
+  const handleMascotClick = () => {
+    playClickSound();
+    setIsOpen(true);
+  };
 
   const handleSend = (textToSend?: string) => {
     const text = textToSend || input;
@@ -246,22 +250,28 @@ export function AiCompanionModal() {
 
   return (
     <>
-      {/* Floating Toggle Button */}
-      {!isOpen && (
-        <button
-          onClick={() => { playClickSound(); setIsOpen(true); }}
-          onMouseEnter={playHoverSound}
-          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 border border-[#36A3FF]/60 bg-[#07070f]/95 text-[#F5F3EE] px-4 py-2.5 rounded-full shadow-[0_0_20px_rgba(54,163,255,0.25)] hover:border-[#FFA500] hover:shadow-[0_0_25px_rgba(255,165,0,0.35)] transition-all transform hover:-translate-y-1 font-['Pixelify_Sans'] text-xs tracking-wider"
-          aria-label="Open AI Companion Floating Chat"
-        >
-          <div className="relative">
-            <Bot size={18} className="text-[#36A3FF]" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#FFA500] animate-ping" />
+      {/* Page Mascot Interactive Companion Widget */}
+      <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end pointer-events-none select-none">
+        {/* Floating Bubble Label when Chat is Closed */}
+        {!isOpen && (
+          <div className="mb-1 pointer-events-auto flex items-center gap-1.5 bg-[#07070f]/95 border border-[#36A3FF]/60 px-2.5 py-1 rounded-full text-[10px] text-[#F5F3EE] font-['Pixelify_Sans'] shadow-[0_0_15px_rgba(54,163,255,0.3)] animate-bounce">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#36A3FF] animate-pulse" />
+            <span>Chat AI</span>
+            <Sparkles size={11} className="text-[#FFA500]" />
           </div>
-          <span>AI COMPANION</span>
-          <Sparkles size={14} className="text-[#FFA500]" />
-        </button>
-      )}
+        )}
+
+        <div className="pointer-events-auto filter drop-shadow-[0_0_12px_rgba(54,163,255,0.3)] hover:drop-shadow-[0_0_18px_rgba(255,165,0,0.5)] transition-all transform hover:scale-105">
+          <div onClick={handleMascotClick} onMouseEnter={playHoverSound}>
+            <Mascot
+              directions="/mascots/crt-directions.webp"
+              reactions="/mascots/crt-reactions.webp"
+              size={96}
+              label="Egytronic CRT AI Mascot"
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Floating Modal Window */}
       {isOpen && (
@@ -269,7 +279,7 @@ export function AiCompanionModal() {
           className={`fixed z-50 transition-all duration-300 flex flex-col border border-[#36A3FF]/40 bg-[#07070f]/95 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.8)] rounded-xl overflow-hidden font-['IBM_Plex_Sans_Arabic'] ${
             isExpanded
               ? "bottom-4 right-4 left-4 top-20 md:left-auto md:w-[600px] md:h-[650px]"
-              : "bottom-5 right-5 w-[90vw] max-w-[380px] h-[520px]"
+              : "bottom-28 right-4 w-[90vw] max-w-[380px] h-[480px]"
           }`}
           role="dialog"
           aria-label="Egytronic AI Companion Chat Modal"
@@ -381,6 +391,7 @@ export function AiCompanionModal() {
           >
             <div className="relative flex-1">
               <input
+                ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
