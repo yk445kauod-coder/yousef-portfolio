@@ -625,7 +625,7 @@ export default function Home() {
         <div className="metrics-row font-en-pixel">
           <div>
             <strong className="text-[#FF754D]">04+</strong>
-            <span>Years of independent engineering</span>
+            <span>Years of independent development</span>
           </div>
           <div>
             <strong className="text-[#36A3FF]">08B</strong>
@@ -815,7 +815,7 @@ export default function Home() {
         <div className="stack-notes">
           <div>
             <Code2 size={18} className="text-[#36A3FF]" />
-            <span>Frontend Engineering</span>
+            <span>Frontend Development</span>
             <b className="font-en-pixel">React + TypeScript + Three.js</b>
           </div>
           <div>
