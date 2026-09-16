@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { playClickSound, playHoverSound, playSectionSwitchSound } from "@/lib/audio";
+import { ScrollQuest } from "@/components/ScrollQuest";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -28,8 +29,8 @@ const ASSETS = {
   azura: "/manus-storage/azura-live_92476904.webp",
   smartboard: "/manus-storage/smartboard-live_c05a0e9b.webp",
   ambient: "/manus-storage/portfolio-ambient_cbd41c6e.mp3",
-  pixelGrid: "/manus-storage/pixel-ai-grid_90cee77d.jpg",
-  pixelOrbit: "/manus-storage/pixel-circuit-orbit_5f0ac662.jpg",
+  pixelGrid: "/manus-storage/pixel-ai-grid_d35ec55e.webp",
+  pixelOrbit: "/manus-storage/pixel-circuit-orbit_64514f43.webp",
 };
 
 const projects = [
@@ -247,6 +248,8 @@ export default function Home() {
   return (
     <main className="portfolio-shell">
       <div className="grain" />
+      <ScrollQuest />
+      <div className="terminal-ribbon" aria-label="System status"><span>YK_OS / v1.0</span><span>LOC: ALEXANDRIA_EG</span><span>STATUS: ONLINE</span></div>
       <header className="site-header">
         <button className="brand-mark" onClick={() => scrollTo("top")} aria-label="Back to top">
           YK<span>/01</span>
@@ -275,7 +278,7 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-visual reveal-fade">
-          <div className="portrait-wrap"><img src={ASSETS.portrait} alt="Yousef Madbouly" /><span>YOUSEF<br />MADBOULY</span></div>
+          <div className="portrait-wrap"><img src={ASSETS.portrait} alt="Portrait of Yousef Madbouly, software developer from Alexandria" width="1200" height="1200" decoding="async" fetchPriority="high" /><span>YOUSEF<br />MADBOULY</span></div>
           <OrbitScene />
           <div className="orb-label orb-label-top"><span>LIVE SYSTEM</span><i /></div>
           <div className="orb-label orb-label-bottom"><span>35.04° N</span><span>29.90° E</span></div>
@@ -322,7 +325,7 @@ export default function Home() {
                 <div className="project-stack">{project.stack.map((item) => <span key={item}>{item}</span>)}</div>
               </div>
               <a className="project-arrow" href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`} onMouseEnter={playHoverSound} onClick={playClickSound}><ArrowUpRight size={22} /></a>
-              <div className="project-visual"><img className="project-live-image" src={project.image} alt={`${project.title} live project`} />
+              <div className="project-visual"><img className="project-live-image" src={project.image} alt={`${project.title} live project interface`} width="960" height="540" loading="lazy" decoding="async" />
                 {project.accent === "lime" && <><div className="terminal-top"><span><i /><i /><i /></span><small>egytronic.py</small></div><div className="terminal-code"><span>01</span><b>model</b> = <em>"egytronic"</em><br /><span>02</span><b>language</b> = <em>"ar-eg"</em><br /><span>03</span><b>status</b> = <strong>"fine-tuned"</strong><br /><span>04</span><b>parameters</b> = <em>"8B"</em></div></>}
                 {project.accent === "orange" && <><div className="phone-frame"><div className="phone-top">AZURA <span>MENU</span></div><div className="phone-food" /><div className="phone-caption">Taste<br /><em>the moment.</em></div><div className="phone-dots"><i /><i /><i /><i /></div></div><div className="scan-pill"><Radio size={13} /> Live menu</div></>}
                 {project.accent === "violet" && <><div className="board-frame"><div className="board-toolbar"><span><BrainCircuit size={15} /> SmartBoard AI</span><i /></div><div className="board-lines"><span /><span /><span /><div><Sparkles size={19} /><b>Lesson generated</b></div><span /><span /></div></div><div className="ai-pill"><Sparkles size={13} /> Teacher mode</div></>}
@@ -332,7 +335,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="toolkit-section">
+      <section className="toolkit-section" id="toolkit">
         <div className="section-kicker"><span>04</span><span className="eyebrow-line" /><span>THE TOOLKIT</span></div>
         <div className="toolkit-grid">
           <div><h2>Curious by<br /><em>default.</em></h2><p>Tools are only useful when they disappear behind the idea. Here&apos;s what I reach for when building from zero to something real.</p></div>
