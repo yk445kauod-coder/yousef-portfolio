@@ -24,9 +24,9 @@ import {
 
 const ASSETS = {
   portrait: "/yousef.jpg",
-  azura: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='100%25' height='100%25' fill='%23181b17'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23ff754d' font-family='monospace' font-size='24'%3EAZURA CAFE %26 RESTAURANT%3C/text%3E%3C/svg%3E",
-  smartboard: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='100%25' height='100%25' fill='%23181b17'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2336a3ff' font-family='monospace' font-size='24'%3ESMARTBOARD AI CLASSROOM%3C/text%3E%3C/svg%3E",
-  pixelOrbit: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='100%25' height='100%25' fill='%23111315'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2336a3ff' font-family='monospace' font-size='24'%3EEGYTRONIC_1.0 8B MODEL%3C/text%3E%3C/svg%3E",
+  azura: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='100%25' height='100%25' fill='%230c0c18'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23ff754d' font-family='monospace' font-size='24'%3EAZURA CAFE %26 RESTAURANT%3C/text%3E%3C/svg%3E",
+  smartboard: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='100%25' height='100%25' fill='%230c0c18'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2336a3ff' font-family='monospace' font-size='24'%3ESMARTBOARD AI CLASSROOM%3C/text%3E%3C/svg%3E",
+  pixelOrbit: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='100%25' height='100%25' fill='%2307070f'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2336a3ff' font-family='monospace' font-size='24'%3EEGYTRONIC_1.0 8B MODEL%3C/text%3E%3C/svg%3E",
 };
 
 const projects = [
@@ -38,7 +38,7 @@ const projects = [
       "An 8B-parameter decoder-only language model fine-tuned for Egyptian Arabic, local linguistic context, instruction following, and practical inference workflows.",
     stack: ["Llama 3.1 8B", "Unsloth", "PyTorch", "Hugging Face"],
     href: "https://huggingface.co/YousefKhamis/Egytronic_1.0",
-    accent: "blue",
+    accent: "orange",
     image: ASSETS.pixelOrbit,
   },
   {
@@ -60,24 +60,24 @@ const projects = [
       "An interactive classroom AI whiteboard that transforms teacher prompts into structured lesson plans, active learning, LaTeX formulas, and TTS.",
     stack: ["AI SDKs", "LaTeX", "Web Speech TTS", "Cloudflare"],
     href: "https://smartboard-eg.pages.dev",
-    accent: "violet",
+    accent: "blue",
     image: ASSETS.smartboard,
   },
 ];
 
 const skills = [
-  "React",
+  "React 19",
   "TypeScript",
   "Vite",
   "Tailwind CSS",
   "Framer Motion",
-  "Firebase",
+  "Firebase DB",
   "Cloudflare Pages",
   "Python",
   "PyTorch",
   "Hugging Face",
   "Unsloth Llama",
-  "LLM APIs & MCP",
+  "LLM APIs",
 ];
 
 function AudioToggle() {
@@ -190,14 +190,14 @@ export default function Home() {
             <span>SOFTWARE DEVELOPER / EGYTRONIC FOUNDER</span>
           </div>
 
-          <h1 className="font-['Handjet'] font-bold text-balance leading-none text-[#F5F3EE]">
+          <h1 className="font-['Handjet'] font-bold text-balance leading-none text-[#ECEAE3]">
             Yousef Khamis<br />
-            <em className="text-[#36A3FF] font-normal">Founder of Egytronic</em><br />
-            & Software Developer
+            <em className="text-[#FF754D] font-normal">Founder of Egytronic</em><br />
+            <span className="text-orange-secondary">& Software Developer</span>
           </h1>
 
-          <p className="hero-intro font-['IBM_Plex_Sans_Arabic'] text-[#aab3bd]">
-            Software developer (مطور برمجيات) from Alexandria, Egypt. Founder of <strong>Egytronic</strong> — building open AI models (<strong>Egytronic_1.0 8B</strong>), full-stack web products, and EdTech platforms.
+          <p className="hero-intro font-['IBM_Plex_Sans_Arabic'] text-[#828c97]">
+            Software developer (مطور برمجيات) from Alexandria, Egypt. Founder of <strong className="text-[#ECEAE3]">Egytronic</strong> — building open AI models (<strong className="text-[#FF754D]">Egytronic_1.0 8B</strong>), full-stack web products, and EdTech platforms.
           </p>
 
           <div className="hero-actions flex-wrap gap-3">
@@ -235,7 +235,7 @@ export default function Home() {
             <span>31.20° N</span>
             <span>29.91° E</span>
           </div>
-          <div className="orb-center font-['Pixelify_Sans'] text-[#36A3FF]">YK</div>
+          <div className="orb-center font-['Pixelify_Sans'] text-[#FF754D]">YK</div>
         </div>
 
         <div className="hero-meta font-['Pixelify_Sans']">
@@ -263,7 +263,7 @@ export default function Home() {
               My work spans LLM development, full-stack product architecture, classroom EdTech tools, and open-source models on Hugging Face.
             </p>
             <a
-              className="arrow-link font-['Pixelify_Sans'] text-[#36A3FF]"
+              className="arrow-link font-['Pixelify_Sans'] text-[#FF754D]"
               href="https://huggingface.co/YousefKhamis"
               target="_blank"
               rel="noreferrer"
@@ -274,7 +274,7 @@ export default function Home() {
         </div>
         <div className="metrics-row font-['Pixelify_Sans']">
           <div>
-            <strong className="text-[#36A3FF]">08B</strong>
+            <strong className="text-[#FF754D]">08B</strong>
             <span>Parameters in Egytronic_1.0 Model</span>
           </div>
           <div>
@@ -303,7 +303,7 @@ export default function Home() {
           <h2 className="font-['Handjet']">
             Proof of <em>Execution.</em>
           </h2>
-          <p className="font-['IBM_Plex_Sans_Arabic'] text-[#aab3bd]">
+          <p className="font-['IBM_Plex_Sans_Arabic'] text-[#828c97]">
             Real applications, fine-tuned models, and production platforms built with clean technical principles.
           </p>
         </div>
@@ -314,7 +314,7 @@ export default function Home() {
               <div className="project-number font-['Pixelify_Sans']">{project.number}</div>
               <div className="project-main">
                 <div className="project-type font-['Pixelify_Sans']">{project.type}</div>
-                <h3 className="font-['Handjet'] text-[#F5F3EE]">{project.title}</h3>
+                <h3 className="font-['Handjet'] text-[#ECEAE3]">{project.title}</h3>
                 <p className="font-['IBM_Plex_Sans_Arabic']">{project.description}</p>
                 <div className="project-stack font-['Pixelify_Sans']">
                   {project.stack.map((item) => (
@@ -362,7 +362,7 @@ export default function Home() {
               Full-Stack &<br />
               <em>AI Pipeline.</em>
             </h2>
-            <p className="font-['IBM_Plex_Sans_Arabic'] text-[#aab3bd]">
+            <p className="font-['IBM_Plex_Sans_Arabic'] text-[#828c97]">
               From web rendering with React and TypeScript to fine-tuning LLMs with Unsloth and PyTorch.
             </p>
           </div>
@@ -377,7 +377,7 @@ export default function Home() {
 
         <div className="stack-notes font-['IBM_Plex_Sans_Arabic']">
           <div>
-            <Code2 size={18} className="text-[#36A3FF]" />
+            <Code2 size={18} className="text-[#FF754D]" />
             <span className="font-['Pixelify_Sans']">Frontend Architecture</span>
             <b>React 19 + TypeScript + Vite + Tailwind</b>
           </div>
@@ -437,7 +437,7 @@ export default function Home() {
 
       <footer className="site-footer font-['Pixelify_Sans']">
         <span>YOUSEF KHAMIS // FOUNDER OF EGYTRONIC</span>
-        <span>Built with React + TypeScript + AI Context <Zap size={13} className="text-[#FFA500]" /></span>
+        <span>Built with React + TypeScript + AI Context <Zap size={13} className="text-[#FF754D]" /></span>
         <span>Alexandria, EG</span>
       </footer>
     </main>

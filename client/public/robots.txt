@@ -1,5 +1,3 @@
 User-agent: *
 Allow: /
-Allow: /llm.txt
-Disallow: /__manus__/
 Sitemap: https://yousef-portfolio.pages.dev/sitemap.xml
