@@ -1,367 +1,98 @@
-import { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import { playClickSound, playHoverSound, playSectionSwitchSound } from "@/lib/audio";
-import { ScrollQuest } from "@/components/ScrollQuest";
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  BrainCircuit,
-  Check,
-  ChevronRight,
-  Code2,
-  ExternalLink,
-  Github,
-  Globe2,
-  Layers3,
-  Linkedin,
-  Mail,
-  MapPin,
-  Menu,
-  Moon,
-  Radio,
-  Sparkles,
-  X,
-  Zap,
-} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowUpRight, Bot, ExternalLink, Github, Heart, Linkedin, Menu, MessageSquare, Play, Send, Sparkles, Terminal, X } from "lucide-react";
 
 const ASSETS = {
-  portrait: "/yousef.jpg",
-  azura: "/manus-storage/azura-live_92476904.webp",
-  smartboard: "/manus-storage/smartboard-live_c05a0e9b.webp",
-  ambient: "/manus-storage/portfolio-ambient_cbd41c6e.mp3",
-  pixelGrid: "/manus-storage/pixel-ai-grid_d35ec55e.webp",
-  pixelOrbit: "/manus-storage/pixel-circuit-orbit_64514f43.webp",
+  avatar: "/manus-storage/yousef-real-photo_f37170b5.webp",
+  mascot: "/manus-storage/yousef-mascot-sphere_40186f9c.png",
+  hero: "/manus-storage/portfolio-hero-pixel_3b9cb218.png",
+  milestone: "/manus-storage/milestone-lab-pixel_f7f81167.png",
+  azura: "/manus-storage/azura-app_pages_dev_2026-09-16_12-37-17_6210_1930027a.webp",
+  smartboard: "/manus-storage/smartboard-eg_pages__2026-09-16_12-37-31_2984_0485466c.webp",
+  azuraLogo: "/manus-storage/azura-logo_da18c386.jpg",
+  smartboardLogo: "/manus-storage/smartboard-logo_c16e7c55.png",
+  chime: "/manus-storage/terminal-chime_0035de26.mp3",
 };
 
 const projects = [
-  {
-    number: "01",
-    type: "AI / MODEL DEVELOPMENT",
-    title: "Egytronic_1.0",
-    description:
-      "An 8B-parameter language model fine-tuned for Egyptian Arabic, local linguistic context, and practical inference workflows.",
-    stack: ["Llama 3.1", "Unsloth", "PyTorch", "Hugging Face"],
-    href: "https://huggingface.co/YousefKhamis/Egytronic_1.0",
-    accent: "lime",
-    image: ASSETS.pixelOrbit,
-  },
-  {
-    number: "02",
-    type: "PRODUCT / FULL-STACK",
-    title: "Azura Cafe",
-    description:
-      "A reel-style menu that turns a QR scan into a fast, mobile-first restaurant experience with live admin workflows.",
-    stack: ["React", "Firebase", "Groq", "Cloudflare"],
-    href: "https://azura-app.pages.dev",
-    accent: "orange",
-    image: ASSETS.azura,
-  },
-  {
-    number: "03",
-    type: "EDTECH / AI PRODUCT",
-    title: "SmartBoard AI",
-    description:
-      "An interactive classroom tool that transforms teacher prompts into structured lessons, visual assets, and active learning modes.",
-    stack: ["AI SDKs", "LaTeX", "3D", "TTS"],
-    href: "https://smartboard-eg.pages.dev",
-    accent: "violet",
-    image: ASSETS.smartboard,
-  },
+  { number: "01", kind: "AI / LLM", title: "Egytronic_1.0", text: "Fine-tuned 8B-parameter language model for Egyptian Arabic, local culture, and practical inference workflows.", tags: ["Llama 3.1", "Unsloth", "GGUF"], image: ASSETS.milestone, link: "https://huggingface.co/YousefKhamis/Egytronic_1.0", cta: "View on Hugging Face" },
+  { number: "02", kind: "EDTECH / AI", title: "SmartBoard AI", text: "An AI-powered classroom whiteboard that turns lesson intent into visual, interactive teaching moments.", tags: ["React", "AI Teacher", "Realtime"], image: ASSETS.smartboard, logo: ASSETS.smartboardLogo, link: "https://smartboard-eg.pages.dev", cta: "Open live project" },
+  { number: "03", kind: "PRODUCT / WEB", title: "Azura Cafe", text: "A mobile-first restaurant experience with QR access, realtime ordering, and a warm seasonal visual system.", tags: ["Firebase", "Cloudflare", "Framer Motion"], image: ASSETS.azura, logo: ASSETS.azuraLogo, link: "https://azura-app.pages.dev", cta: "Open live project" },
 ];
 
-const skills = [
-  "React",
-  "TypeScript",
-  "Vite",
-  "Tailwind",
-  "Framer Motion",
-  "Firebase",
-  "Cloudflare",
-  "Python",
-  "PyTorch",
-  "Transformers",
-  "LLM APIs",
-  "MCP",
-];
+const skills = ["React", "TypeScript", "Tailwind", "Firebase RTDB", "Cloudflare Pages", "PyTorch", "Transformers", "Unsloth", "MCP", "Framer Motion", "GitHub", "Arabic RTL"];
+const context = "Yousef Khamis Ebrahim Madbouly is a junior software developer from Alexandria, Egypt and an independent builder with four years of self-directed development. He works across React, TypeScript, Firebase, Cloudflare, AI product development, Llama fine-tuning, PyTorch, Transformers, Unsloth, MCP, and educational technology. Featured work includes Egytronic_1.0, a fine-tuned 8B Llama 3.1 model for Egyptian Arabic on Hugging Face; SmartBoard AI, an AI classroom whiteboard; and Azura Cafe, a deployed mobile-first restaurant web app. GitHub: https://github.com/yk445kauod-coder. Hugging Face: https://huggingface.co/YousefKhamis. Live projects: https://smartboard-eg.pages.dev and https://azura-app.pages.dev.";
 
-function OrbitScene() {
-  const mountRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const mount = mountRef.current;
-    if (!mount) return;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-    camera.position.set(0, 0, 7.3);
-
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-    mount.appendChild(renderer.domElement);
-
-    const group = new THREE.Group();
-    scene.add(group);
-
-    const sphere = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.7, 2),
-      new THREE.MeshBasicMaterial({ color: 0x36a3ff, wireframe: true, transparent: true, opacity: 0.42 }),
-    );
-    group.add(sphere);
-
-    const inner = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.18, 1),
-      new THREE.MeshBasicMaterial({ color: 0xf1eee8, wireframe: true, transparent: true, opacity: 0.22 }),
-    );
-    group.add(inner);
-
-    const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(2.16, 0.012, 12, 120),
-      new THREE.MeshBasicMaterial({ color: 0xff745d, transparent: true, opacity: 0.82 }),
-    );
-    ring.rotation.x = Math.PI / 2.7;
-    ring.rotation.y = 0.45;
-    group.add(ring);
-
-    const ringTwo = new THREE.Mesh(
-      new THREE.TorusGeometry(2.43, 0.008, 12, 120),
-      new THREE.MeshBasicMaterial({ color: 0x36a3ff, transparent: true, opacity: 0.48 }),
-    );
-    ringTwo.rotation.x = -Math.PI / 3.5;
-    ringTwo.rotation.z = 0.7;
-    group.add(ringTwo);
-
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particleCount = 430;
-    const positions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount; i += 1) {
-      const radius = 2.8 + Math.random() * 1.4;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      positions[i * 3 + 2] = radius * Math.cos(phi);
-    }
-    particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    const particles = new THREE.Points(
-      particlesGeometry,
-      new THREE.PointsMaterial({ color: 0xece9e0, size: 0.022, transparent: true, opacity: 0.6 }),
-    );
-    scene.add(particles);
-
-    let targetX = 0;
-    let targetY = 0;
-    const onPointerMove = (event: PointerEvent) => {
-      const rect = mount.getBoundingClientRect();
-      targetX = ((event.clientX - rect.left) / rect.width - 0.5) * 0.45;
-      targetY = ((event.clientY - rect.top) / rect.height - 0.5) * 0.35;
-    };
-    mount.addEventListener("pointermove", onPointerMove);
-
-    const resize = () => {
-      const { width, height } = mount.getBoundingClientRect();
-      renderer.setSize(width, height, false);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-    };
-    resize();
-    const resizeObserver = new ResizeObserver(resize);
-    resizeObserver.observe(mount);
-
-    let frame = 0;
-    const animate = () => {
-      frame = requestAnimationFrame(animate);
-      group.rotation.y += 0.0029;
-      group.rotation.x += 0.0007;
-      group.rotation.x += (targetY - group.rotation.x) * 0.012;
-      group.rotation.z += (targetX - group.rotation.z) * 0.012;
-      particles.rotation.y -= 0.0007;
-      particles.rotation.x += 0.00025;
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    return () => {
-      cancelAnimationFrame(frame);
-      resizeObserver.disconnect();
-      mount.removeEventListener("pointermove", onPointerMove);
-      renderer.dispose();
-      particlesGeometry.dispose();
-      mount.removeChild(renderer.domElement);
-    };
-  }, []);
-
-  return <div ref={mountRef} className="orbit-scene" aria-label="Interactive Three.js particle sphere" />;
+function AppLink({ href, children, className = "" }: { href: string; children: React.ReactNode; className?: string }) {
+  return <a href={href} target="_blank" rel="noreferrer" className={className}>{children}</a>;
 }
 
-function AudioToggle() {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [playing, setPlaying] = useState(false);
-  const toggle = async () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (playing) { audio.pause(); setPlaying(false); return; }
-    try { await audio.play(); setPlaying(true); } catch { setPlaying(false); }
+function ChatModal({ onClose }: { onClose: () => void }) {
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<{ from: "bot" | "user"; text: string }[]>([
+    { from: "bot", text: "أهلاً! أنا YK\'s portfolio agent. اسألني عن مشاريعه، الـstack، أو Egytronic_1.0 — وأنا هجاوب من الـCV والروابط الحقيقية." },
+  ]);
+  const answer = (q: string) => {
+    const lower = q.toLowerCase();
+    if (lower.includes("egytronic") || lower.includes("model") || lower.includes("llm") || lower.includes("نموذج")) return "Egytronic_1.0 هو نموذج 8B مبني على Llama 3.1، تم ضبطه للهجة المصرية والسياقات الثقافية والقانونية. منشور بصيغ F16 وGGUF على Hugging Face، مع توثيق لاستخدام Transformers وllama.cpp.";
+    if (lower.includes("smart") || lower.includes("board") || lower.includes("تعليم")) return "SmartBoard AI سبورة تعليمية مدعومة بـAI teacher: تولّد الدروس، تعرضها بصرياً، وتدعم real-time workflows للمدرسين والطلاب. جرّبها من الرابط الحي في قسم المشاريع.";
+    if (lower.includes("skill") || lower.includes("stack") || lower.includes("تقنيات")) return "الـcore stack: React + TypeScript + Tailwind + Framer Motion في الواجهة، Firebase Realtime Database وCloudflare في النشر، وTransformers/PyTorch/Unsloth في الـAI.";
+    if (lower.includes("contact") || lower.includes("تواصل")) return "تقدر تتواصل مع Yousef عبر البريد yousefkhamismadbouly@googlemail.com أو GitHub، وتقدر تحمل llm.txt لو عايز تدي أي coding agent السياق الكامل عنه.";
+    return "أقدر أساعدك في فهم خبرة Yousef، Egytronic_1.0، SmartBoard AI، Azura Cafe، أو اختياراته التقنية. جرّب سؤالاً أكثر تحديداً.";
   };
-  return <>
-    <audio ref={audioRef} src={ASSETS.ambient} loop preload="none" />
-    <button className={`audio-toggle ${playing ? "is-playing" : ""}`} onClick={toggle} aria-label={playing ? "Pause ambient sound" : "Play ambient sound"}>
-      <span className="audio-bars"><i /><i /><i /><i /></span><span>{playing ? "SOUND ON" : "SOUND OFF"}</span>
-    </button>
-  </>;
-}
-
-function SpotlightCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const onMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    const card = ref.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    card.style.setProperty("--mouse-x", `${event.clientX - rect.left}px`);
-    card.style.setProperty("--mouse-y", `${event.clientY - rect.top}px`);
+  const send = () => {
+    if (!input.trim()) return;
+    const q = input.trim();
+    setMessages((m) => [...m, { from: "user", text: q }, { from: "bot", text: answer(q) }]);
+    setInput("");
   };
-  return (
-    <div ref={ref} onMouseMove={onMove} className={`spotlight-card ${className}`}>
-      {children}
-    </div>
-  );
-}
-
-function UiverseButton({ children, href, outline = false }: { children: React.ReactNode; href: string; outline?: boolean }) {
-  return (
-    <a className={`uiverse-button ${outline ? "uiverse-button-outline" : ""}`} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" onMouseEnter={playHoverSound} onClick={playClickSound}>
-      <span>{children}</span>
-      <ArrowUpRight size={16} strokeWidth={2.4} />
-    </a>
-  );
+  return <div className="modal-backdrop" onClick={onClose}><section className="chat-modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Chat with YK portfolio agent">
+    <header className="chat-head"><div><div className="eyebrow"><span className="status-dot" /> ONLINE / CV CONTEXT LOADED</div><h2>YK_AGENT<span className="cursor">_</span></h2></div><button className="icon-button" onClick={onClose} aria-label="Close chat"><X size={18} /></button></header>
+    <div className="chat-body">{messages.map((m, i) => <div className={`message ${m.from}`} key={i}><span className="message-label">{m.from === "bot" ? "yk_agent" : "you"}</span><p>{m.text}</p></div>)}</div>
+    <div className="chat-input"><input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Ask about the work... / اسأل عن الشغل" aria-label="Chat message" /><button onClick={send} aria-label="Send message"><Send size={16} /></button></div>
+  </section></div>;
 }
 
 export default function Home() {
+  const [chatOpen, setChatOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [repoCount, setRepoCount] = useState("many");
+  const [modelDownloads, setModelDownloads] = useState("28");
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => {
+    fetch("https://api.github.com/users/yk445kauod-coder/repos?per_page=100").then((r) => r.json()).then((data) => Array.isArray(data) && setRepoCount(String(data.length))).catch(() => undefined);
+    fetch("https://huggingface.co/api/models/YousefKhamis/Egytronic_1.0").then((r) => r.json()).then((data) => data?.downloads && setModelDownloads(String(data.downloads))).catch(() => undefined);
+  }, []);
+  useEffect(() => {
+    const updateProgress = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(max > 0 ? (window.scrollY / max) * 100 : 0);
+    };
+    const onPointerMove = (event: PointerEvent) => { document.documentElement.style.setProperty("--pointer-x", `${event.clientX}px`); document.documentElement.style.setProperty("--pointer-y", `${event.clientY}px`); };
+    const revealObserver = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")), { threshold: 0.12 });
+    document.querySelectorAll("[data-reveal]").forEach((element) => revealObserver.observe(element));
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    updateProgress();
+    return () => { revealObserver.disconnect(); window.removeEventListener("scroll", updateProgress); window.removeEventListener("pointermove", onPointerMove); };
+  }, []);
+  const stats = useMemo(() => [{ value: "4+", label: "YEARS SHIPPING" }, { value: repoCount, label: "PUBLIC REPOS" }, { value: modelDownloads, label: "MODEL DOWNLOADS" }, { value: "∞", label: "CURIOSITY" }], [repoCount, modelDownloads]);
+  const play = () => { const audio = new Audio(ASSETS.chime); audio.volume = 0.12; audio.play().catch(() => undefined); setPlaying(true); setTimeout(() => setPlaying(false), 900); };
 
-  const scrollTo = (id: string) => {
-    playSectionSwitchSound();
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    setMenuOpen(false);
-  };
-
-  return (
-    <main className="portfolio-shell">
-      <div className="grain" />
-      <ScrollQuest />
-      <div className="terminal-ribbon" aria-label="System status"><span>YK_OS / v1.0</span><span>LOC: ALEXANDRIA_EG</span><span>STATUS: ONLINE</span></div>
-      <header className="site-header">
-        <button className="brand-mark" onClick={() => scrollTo("top")} aria-label="Back to top">
-          YK<span>/01</span>
-        </button>
-        <nav className={`desktop-nav ${menuOpen ? "is-open" : ""}`}>
-          <button onClick={() => scrollTo("work")}>Selected work</button>
-          <button onClick={() => scrollTo("about")}>About</button>
-          <button onClick={() => scrollTo("contact")}>Contact</button>
-        </nav>
-        <div className="header-actions"><AudioToggle />
-          <span className="availability"><i /> Available for select work</span>
-          <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
-            {menuOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-        </div>
-      </header>
-
-      <section id="top" className="hero-section">
-        <div className="hero-copy reveal-up">
-          <div className="eyebrow"><span>01</span><span className="eyebrow-line" /><span>SOFTWARE / AI / PRODUCT</span></div>
-          <h1>Building<br /><em>useful</em><br />intelligence.</h1>
-          <p className="hero-intro">I&apos;m Yousef Madbouly — a junior software developer from Alexandria creating digital products at the intersection of <strong>full-stack craft</strong>, <strong>applied AI</strong>, and <strong>education</strong>.</p>
-          <div className="hero-actions">
-            <UiverseButton href="#work">Explore the work</UiverseButton>
-            <a className="text-link" href="mailto:Yousefkhamismadbouly@googlemail.com">Let&apos;s talk <ArrowDownRight size={16} /></a>
-          </div>
-        </div>
-        <div className="hero-visual reveal-fade">
-          <div className="portrait-wrap"><img src={ASSETS.portrait} alt="Portrait of Yousef Madbouly, software developer from Alexandria" width="1200" height="1200" decoding="async" fetchPriority="high" /><span>YOUSEF<br />MADBOULY</span></div>
-          <OrbitScene />
-          <div className="orb-label orb-label-top"><span>LIVE SYSTEM</span><i /></div>
-          <div className="orb-label orb-label-bottom"><span>35.04° N</span><span>29.90° E</span></div>
-          <div className="orb-center">YK</div>
-        </div>
-        <div className="hero-meta">
-          <span>Based in Alexandria, Egypt</span>
-          <span>Scroll to explore <ArrowDownRight size={15} /></span>
-        </div>
-      </section>
-
-      <section className="statement-section" id="about">
-        <div className="section-kicker"><span>02</span><span className="eyebrow-line" /><span>THE APPROACH</span></div>
-        <div className="statement-grid">
-          <p className="statement-lead">I build things that make complicated technology feel <em>natural.</em></p>
-          <div className="statement-body">
-            <p>Four years of self-directed development taught me to own the entire loop — from the first question to a product people can actually use.</p>
-            <p>Whether it&apos;s a local language model, a teacher&apos;s smartboard, or a QR menu for a real café, the goal stays the same: make the invisible feel simple.</p>
-            <a className="arrow-link" href="https://github.com/yk445kauod-coder" target="_blank" rel="noreferrer">More about my process <ArrowUpRight size={17} /></a>
-          </div>
-        </div>
-        <div className="metrics-row">
-          <div><strong>04</strong><span>Years building independently</span></div>
-          <div><strong>08B</strong><span>Parameters in Egytronic_1.0</span></div>
-          <div><strong>03</strong><span>Public products shipped</span></div>
-          <div><strong>∞</strong><span>Curiosity left to explore</span></div>
-        </div>
-      </section>
-
-      <section className="work-section" id="work">
-        <div className="section-heading">
-          <div className="section-kicker"><span>03</span><span className="eyebrow-line" /><span>SELECTED WORK</span></div>
-          <h2>Proof of <em>practice.</em></h2>
-          <p>Small, opinionated products built in public — each one a different answer to a real problem.</p>
-        </div>
-        <div className="project-list">
-          {projects.map((project) => (
-            <SpotlightCard key={project.number} className={`project-card accent-${project.accent}`}>
-              <div className="project-number">{project.number}</div>
-              <div className="project-main">
-                <div className="project-type">{project.type}</div>
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <div className="project-stack">{project.stack.map((item) => <span key={item}>{item}</span>)}</div>
-              </div>
-              <a className="project-arrow" href={project.href} target="_blank" rel="noreferrer" aria-label={`Open ${project.title}`} onMouseEnter={playHoverSound} onClick={playClickSound}><ArrowUpRight size={22} /></a>
-              <div className="project-visual"><img className="project-live-image" src={project.image} alt={`${project.title} live project interface`} width="960" height="540" loading="lazy" decoding="async" />
-                {project.accent === "lime" && <><div className="terminal-top"><span><i /><i /><i /></span><small>egytronic.py</small></div><div className="terminal-code"><span>01</span><b>model</b> = <em>"egytronic"</em><br /><span>02</span><b>language</b> = <em>"ar-eg"</em><br /><span>03</span><b>status</b> = <strong>"fine-tuned"</strong><br /><span>04</span><b>parameters</b> = <em>"8B"</em></div></>}
-                {project.accent === "orange" && <><div className="phone-frame"><div className="phone-top">AZURA <span>MENU</span></div><div className="phone-food" /><div className="phone-caption">Taste<br /><em>the moment.</em></div><div className="phone-dots"><i /><i /><i /><i /></div></div><div className="scan-pill"><Radio size={13} /> Live menu</div></>}
-                {project.accent === "violet" && <><div className="board-frame"><div className="board-toolbar"><span><BrainCircuit size={15} /> SmartBoard AI</span><i /></div><div className="board-lines"><span /><span /><span /><div><Sparkles size={19} /><b>Lesson generated</b></div><span /><span /></div></div><div className="ai-pill"><Sparkles size={13} /> Teacher mode</div></>}
-              </div>
-            </SpotlightCard>
-          ))}
-        </div>
-      </section>
-
-      <section className="toolkit-section" id="toolkit">
-        <div className="section-kicker"><span>04</span><span className="eyebrow-line" /><span>THE TOOLKIT</span></div>
-        <div className="toolkit-grid">
-          <div><h2>Curious by<br /><em>default.</em></h2><p>Tools are only useful when they disappear behind the idea. Here&apos;s what I reach for when building from zero to something real.</p></div>
-          <div className="skills-cloud">{skills.map((skill, index) => <span key={skill} style={{ "--delay": `${index * 0.04}s` } as React.CSSProperties}>{skill}</span>)}</div>
-        </div>
-        <div className="stack-notes">
-          <div><Code2 size={18} /><span>Frontend architecture</span><b>React + TypeScript + Vite</b></div>
-          <div><BrainCircuit size={18} /><span>Applied intelligence</span><b>LLMs + fine-tuning + inference</b></div>
-          <div><Layers3 size={18} /><span>Production mindset</span><b>Firebase + Cloudflare + Git</b></div>
-        </div>
-      </section>
-
-      <section className="contact-section" id="contact">
-        <div className="contact-glow" />
-        <div className="section-kicker"><span>05</span><span className="eyebrow-line" /><span>START A CONVERSATION</span></div>
-        <h2>Have a good<br /><em>problem?</em></h2>
-        <p>I&apos;m open to thoughtful collaborations, ambitious products, and conversations about what&apos;s next.</p>
-        <UiverseButton href="mailto:Yousefkhamismadbouly@googlemail.com">Send an email</UiverseButton>
-        <div className="contact-details">
-          <a href="mailto:Yousefkhamismadbouly@googlemail.com"><Mail size={15} /> Yousefkhamismadbouly@googlemail.com</a>
-          <span><MapPin size={15} /> Alexandria, Egypt</span>
-          <div className="socials"><a href="https://github.com/yk445kauod-coder" target="_blank" rel="noreferrer"><Github size={17} /></a><a href="https://huggingface.co/YousefKhamis" target="_blank" rel="noreferrer"><Globe2 size={17} /></a><a href="https://www.linkedin.com" target="_blank" rel="noreferrer"><Linkedin size={17} /></a></div>
-        </div>
-      </section>
-
-      <footer className="site-footer"><span>YK / 01 — 2026</span><span>Designed & built with intent <Zap size={13} /></span><span>Alexandria, EG</span></footer>
+  return <div className="site-shell"><div className="cursor-glow" aria-hidden="true" /><div className="page-progress" style={{ width: `${scrollProgress}%` }} aria-hidden="true" />
+    <nav className="nav container"><a href="#top" className="brand" aria-label="Yousef Khamis home"><img className="mascot-mark" src={ASSETS.mascot} alt="Tiny pharaonic pixel mascot" /><span>YOUSEF<span className="muted">.DEV</span></span></a><div className={`nav-links ${menuOpen ? "open" : ""}`}><a href="#work" onClick={() => setMenuOpen(false)}>WORK</a><a href="#stack" onClick={() => setMenuOpen(false)}>STACK</a><a href="#about" onClick={() => setMenuOpen(false)}>ABOUT</a><a href="/llm.txt" download>LLM.TXT</a></div><button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation"><Menu size={20} /></button><button className="chat-trigger" onClick={() => setChatOpen(true)}><MessageSquare size={15} /> ASK YK</button></nav>
+    <main id="top">
+      <section className="hero container" data-reveal><div className="hero-copy"><div className="eyebrow"><span className="status-dot" /> ALEXANDRIA, EGYPT / AVAILABLE FOR SELECT BUILDS</div><h1>BUILDING<br /><span>USEFUL</span> WORLDS<span className="cursor">_</span></h1><p className="hero-lede">Junior software developer crafting full-stack products, applied AI, and interfaces with a distinctly Egyptian point of view.</p><div className="hero-actions"><a href="#work" className="button primary">EXPLORE THE WORK <ArrowUpRight size={16} /></a><button className="button ghost" onClick={play}><Play size={14} /> {playing ? "PLAYING..." : "PLAY SIGNAL"}</button></div><div className="hero-meta"><span><Terminal size={14} /> React / AI / SHIP</span><span>04°12′N / 31°14′E</span></div></div><div className="hero-art"><div className="art-frame"><img src={ASSETS.avatar} alt="Professional portrait of Yousef Khamis" /><span className="art-tag">[ PROFILE // YK ]</span></div><div className="scroll-note">SCROLL TO LOAD STORY <span>↓</span></div></div></section>
+      <section className="ticker" aria-label="Skills ticker"><div className="ticker-track">EGYPTIAN ARABIC <i>✦</i> FULL-STACK <i>✦</i> APPLIED AI <i>✦</i> OPEN WEIGHTS <i>✦</i> SHIP / LEARN / REPEAT <i>✦</i> EGYPTIAN ARABIC <i>✦</i> FULL-STACK <i>✦</i> APPLIED AI <i>✦</i></div></section>
+      <section className="stats container" data-reveal>{stats.map((s) => <div className="stat" key={s.label}><strong>{s.value}</strong><span>{s.label}</span></div>)}</section>
+      <section id="work" className="section container" data-reveal><div className="section-heading"><div><span className="section-index">01 / SELECTED WORK</span><h2>THINGS I<br /><em>SHIPPED</em></h2></div><p>Real products, public deployments, and experiments that move between code, culture, and users.</p></div><div className="project-grid">{projects.map((p) => <article className="project-card" key={p.title}><div className="project-image"><img src={p.image} alt={`${p.title} project visual`} /><span className="project-number">{p.number}</span><span className="live-pill"><span className="status-dot" /> LIVE</span></div><div className="project-info"><span className="eyebrow">{p.kind}</span><div className="project-title-row"><h3>{p.title}</h3>{'logo' in p && <img className="project-logo" src={p.logo} alt={`${p.title} logo from live project favicon`} />}</div><p>{p.text}</p><div className="tags">{p.tags.map((t) => <span key={t}>{t}</span>)}</div><AppLink href={p.link} className="text-link">{p.cta} <ArrowUpRight size={15} /></AppLink></div></article>)}</div></section>
+      <section id="stack" className="section stack-section" data-reveal><div className="container"><div className="section-heading"><div><span className="section-index">02 / ARSENAL</span><h2>THE<br /><em>TOOLKIT</em></h2></div><p>Tools are only useful when they disappear into the experience. Here’s what I reach for when the idea is ready to become real.</p></div><div className="skill-cloud">{skills.map((s, i) => <span className={i % 4 === 0 ? "accent" : ""} key={s}>{s}</span>)}</div></div></section>
+      <section id="about" className="section container about-section" data-reveal><div className="about-grid"><div><span className="section-index">03 / THE BUILDER</span><h2>CURIOUS<br /><em>BY DEFAULT</em></h2><div className="about-quote">“A working prototype beats a perfect plan. Real users are the best teachers.”</div></div><div className="about-copy"><p>I'm Yousef — a self-directed developer from Alexandria building at the intersection of software engineering, cloud systems, and applied AI.</p><p>My favorite work has a clear purpose: make a classroom more alive, make a local language more legible to machines, or make a small product feel like someone cared.</p><div className="about-links"><AppLink href="https://github.com/yk445kauod-coder"><Github size={17} /> GitHub</AppLink><AppLink href="https://huggingface.co/YousefKhamis"><span className="hf-icon">🤗</span> Hugging Face</AppLink><a href="mailto:yousefkhamismadbouly@googlemail.com"><Heart size={16} /> Say hello</a></div></div></div></section>
+      <section className="milestone container" data-reveal><div className="milestone-art"><img src={ASSETS.hero} alt="Pixel art Alexandria coastline at dusk" /></div><div className="milestone-copy"><span className="section-index">04 / NEXT CHECKPOINT</span><h2>KEEP<br /><em>SHIPPING</em></h2><p>The next level is not a title. It’s another useful thing in the hands of a real person.</p><a href="mailto:yousefkhamismadbouly@googlemail.com" className="button primary">START A CONVERSATION <ArrowUpRight size={16} /></a></div></section>
     </main>
-  );
+    <footer className="footer container"><span>YK / © 2026 / MADE IN ALEXANDRIA</span><span>BUILT WITH INTENTION <Sparkles size={13} /></span></footer>
+    <button className="floating-chat" onClick={() => setChatOpen(true)} aria-label="Open AI companion"><Bot size={20} /><span>AI COMPANION</span></button>
+    {chatOpen && <ChatModal onClose={() => setChatOpen(false)} />}
+    <span className="sr-only">{context}</span>
+  </div>;
 }
