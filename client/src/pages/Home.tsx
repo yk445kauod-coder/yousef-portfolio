@@ -3,15 +3,15 @@ import { ArrowUpRight, Bot, ExternalLink, Github, Heart, Linkedin, Menu, Message
 
 const ASSETS = {
   avatar: "/assets/yousef-real-photo.webp",
-  mascot: "/assets/yousef-mascot-sphere.png",
-  hero: "/assets/portfolio-hero-pixel.png",
-  milestone: "/assets/milestone-lab-pixel.png",
+  mascot: "/assets/yousef-mascot-sphere.webp",
+  hero: "/assets/portfolio-hero-pixel.webp",
+  milestone: "/assets/milestone-lab-pixel.webp",
   azura: "/assets/azura-real.webp",
   smartboard: "/assets/smartboard-real.webp",
-  azuraLogo: "/assets/azura-logo.jpg",
-  smartboardLogo: "/assets/smartboard-logo.png",
+  azuraLogo: "/assets/azura-logo.webp",
+  smartboardLogo: "/assets/smartboard-logo.webp",
   chime: "/assets/terminal-chime.mp3",
-  pyramidSprites: "/assets/pyramid-build-sprites.png",
+  pyramidSprites: "/assets/pyramid-build-sprites.webp",
 };
 
 const projects = [
