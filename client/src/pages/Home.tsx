@@ -2,16 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, Bot, ExternalLink, Github, Heart, Linkedin, Menu, MessageSquare, Play, Send, Sparkles, Terminal, X } from "lucide-react";
 
 const ASSETS = {
-  avatar: "/assets/yousef-real-photo.webp",
-  mascot: "/assets/yousef-mascot-sphere.webp",
-  hero: "/assets/portfolio-hero-pixel.webp",
-  milestone: "/assets/milestone-lab-pixel.webp",
-  azura: "/assets/azura-real.webp",
-  smartboard: "/assets/smartboard-real.webp",
-  azuraLogo: "/assets/azura-logo.webp",
-  smartboardLogo: "/assets/smartboard-logo.webp",
+  avatar: "/assets/yousef-real-photo.jpg",
+  mascot: "/assets/yousef-mascot-sphere.png",
+  hero: "/assets/portfolio-hero-pixel.jpg",
+  milestone: "/assets/milestone-lab-pixel.jpg",
+  azura: "/assets/azura-real.jpg",
+  smartboard: "/assets/smartboard-real.jpg",
+  azuraLogo: "/assets/azura-logo.jpg",
+  smartboardLogo: "/assets/smartboard-logo.png",
   chime: "/assets/terminal-chime.mp3",
-  pyramidSprites: "/assets/pyramid-build-sprites.webp",
+  pyramidSprites: "/assets/pyramid-build-sprites.png",
 };
 
 const projects = [
