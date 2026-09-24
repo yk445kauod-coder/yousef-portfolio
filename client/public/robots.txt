@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://yousef-portfolio.pages.dev/sitemap.xml
+Sitemap: https://yousef-khamis.pages.dev/sitemap.xml
 
 # AI agents: read /llm.txt and /ai-context.md for canonical portfolio context.
+# Machine-readable portfolio: semantic HTML, descriptive alt text, one H1, and downloadable context.
